@@ -1,0 +1,24 @@
+# Build
+target/
+build/
+bin/
+obj/
+out/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Env / secrets
+.env
+*.env.local
+
+# Node / app
+node_modules/
+.expo/
+*.apk
+*.ipa
+
+# OS
+.DS_Store
