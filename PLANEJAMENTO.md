@@ -25,7 +25,7 @@ completas, autenticação com controle de acesso por perfil e integração com o
 ## 3. Estrutura do monorepo
 
 ```
-fiap_2-ano_fase-3/
+fiap_2-ano_fase-6-projeto-agua-branca/
 ├── backend/        API Spring Boot (Maven) + docker-compose (API + MongoDB)
 ├── app/            App Android (Kotlin/Compose) — MockRepository → Retrofit
 ├── docs/           diagrama de arquitetura, endpoints, Postman, slides
