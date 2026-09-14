@@ -22,3 +22,10 @@ node_modules/
 
 # OS
 .DS_Store
+
+# Android
+.gradle/
+local.properties
+captures/
+*.keystore
+*.jks

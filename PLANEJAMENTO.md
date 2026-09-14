@@ -6,111 +6,135 @@
 ## 1. Objetivo
 
 Substituir os mocks do app da Sprint 1 (semestre anterior) por um **backend real**: APIs REST
-completas, autenticação com controle de acesso por perfil, integração com o app nativo,
-consumo de serviços externos e (plus) integração com IA.
+completas, autenticação com controle de acesso por perfil e integração com o app nativo.
 
-## 2. Requisitos obrigatórios
+> **Fora do escopo por enquanto:** Diferencial IA (Plus).
 
-| Tema | Requisito |
+## 2. Decisões tomadas
+
+| Tema | Decisão |
 |---|---|
-| Backend | **Java** (Spring Boot, Spring Security, JPA/Hibernate) **ou** **C#** (.NET 8 Web API, Identity/JWT, EF Core) |
-| Banco | MongoDB (ou outro NoSQL) |
-| Integração | App da Sprint 1 consumindo as APIs reais, sem mocks |
-| Plus | IA no filtro/análise de iniciativas ou resultados (APIs gratuitas: Gemini, OpenRouter, GitHub Models…) |
+| Backend | **Java 21 + Spring Boot 3**, Spring Security + JWT |
+| Banco | **MongoDB** (Spring Data MongoDB) |
+| App | App Android da Sprint 1 (Kotlin + Jetpack Compose) — base: `app_de_Inovação2.zip` |
+| Repositório | **Monorepo**: `backend/` + `app/` |
+| IA | adiada |
 
-## 3. Perfis e permissões
+> O enunciado cita JPA/Hibernate, mas com MongoDB o equivalente é Spring Data MongoDB — justificar na apresentação.
 
-| Recurso | Operador | Gestor | Líder |
+## 3. Estrutura do monorepo
+
+```
+fiap_2-ano_fase-3/
+├── backend/        API Spring Boot (Maven) + docker-compose (API + MongoDB)
+├── app/            App Android (Kotlin/Compose) — MockRepository → Retrofit
+├── docs/           diagrama de arquitetura, endpoints, Postman, slides
+└── PLANEJAMENTO.md
+```
+
+## 4. Ponto de partida: app da Sprint 1
+
+- Pacote `com.aguiabranca.inovacao`, MVVM + `MockRepository` (dados em memória), Navigation Compose.
+- `app_de_Inovação2.zip` = mesma base do `app_de_inovação.zip` com dependências atualizadas (SDK 35, Compose BOM).
+- Telas: Login · Operador (home + orientações, minhas ideias, nova ideia) · Gestor (painel KPIs, fila de ideias, aprovar/rejeitar, projetos) · Liderança (dashboard 6 KPIs, orientações, andamento de projetos).
+- Modelos atuais (`Models.kt`): `User(role: OPERADOR|GESTOR|LIDERANCA)`, `Orientacao`, `Idea(status: ENVIADA|TRIAGEM|ANALISE|DECISAO|PROJETO|REJEITADA, prioridade: BAIXA|MEDIA|ALTA)`, `Projeto`, `DashboardMetricas`.
+- Lacunas vs. enunciado: CRUD de orientações pelo líder, edição/exclusão de ideias pelo operador, CRUD de projetos pelo gestor, vínculo ideia/projeto ↔ estratégia, histórico de estratégias, valores monetários como `String`.
+- Atenção: o zip contém uma pasta espúria `app/src/main/java/com/aguiabranca/inovacao/{data/` — limpar na importação.
+
+## 5. Perfis e permissões
+
+| Recurso | Operador | Gestor | Liderança |
 |---|---|---|---|
 | Orientações estratégicas | consulta | consulta | **CRUD** |
 | Ideias de inovação | **CRUD das próprias** | consulta, prioriza, aprova | consulta |
 | Projetos / iniciativas | — | **CRUD** + progresso/resultados | consulta andamento |
 | Dashboard / relatórios | — | — | **consulta** |
 
-## 4. Modelo de domínio (rascunho)
+## 6. Modelo de domínio (alinhado ao app)
 
-- **Usuario** — id, nome, email, senhaHash (BCrypt), perfil (`OPERADOR | GESTOR | LIDER`)
-- **Estrategia** — id, titulo, descricao, categoria, campanha, dataCriacao, vigente, **historico[]** (versões: data, categoria, campanha, autor)
-- **Ideia** — id, titulo, descricao, problema, autorId, estrategiaId, status (`PENDENTE | PRIORIZADA | APROVADA | REJEITADA`), prioridade, scoreIA, justificativaIA, datas
-- **Projeto** — id, nome, descricao, estrategiaId, ideiaOrigemId, gestorId, etapa, status, investimento, prazo, dataInicio/Fim, retornoFinanceiro, lucro, aumentoProdutividade, atualizacoes[]
+Manter nomes/enums do app sempre que possível para reduzir retrabalho na integração.
 
-## 5. Endpoints previstos (v1)
+- **Usuario** — id, nome, email, senhaHash (BCrypt), role (`OPERADOR | GESTOR | LIDERANCA`), area
+- **Orientacao** (estratégia) — id, titulo, descricao, categoria, campanha, area, periodo, indicadores[], vigente, criadoEm, **historico[]** (data, categoria, campanha, alteradoPor)
+- **Ideia** — id, titulo, categoria, problemaObservado, suaProposta, impacto, status (enum do app), prioridade (`BAIXA | MEDIA | ALTA`), operadorId, nomeOperador, orientacaoId, criadoEm, atualizadoEm
+- **Projeto** — id, nome, descricao, responsavelId, ideiaOrigemId, orientacaoId, etapa, totalEtapas, progresso, status, prazo, investimento (BigDecimal), retornoFinanceiro, lucro, custoEvitado, aumentoProdutividade, atualizacoes[]
+- **Dashboard** (calculado) — roi, lucro, projetosAtivos, noPrazo, custoEvitado, produtividade; por orientação e por projeto
+
+## 7. Endpoints previstos (v1)
 
 ```
-POST   /api/auth/login                     público → JWT
-POST   /api/auth/register                  (seed ou LIDER)
-GET    /api/auth/me
+POST   /api/auth/login                      público → JWT
+GET    /api/auth/me                         autenticado
 
-GET    /api/estrategias                    todos
-GET    /api/estrategias/{id}               todos
-GET    /api/estrategias/{id}/historico     todos
-POST   /api/estrategias                    LIDER
-PUT    /api/estrategias/{id}               LIDER
-DELETE /api/estrategias/{id}               LIDER
+GET    /api/orientacoes                     todos
+GET    /api/orientacoes/{id}                todos
+GET    /api/orientacoes/{id}/historico      todos
+POST   /api/orientacoes                     LIDERANCA
+PUT    /api/orientacoes/{id}                LIDERANCA
+DELETE /api/orientacoes/{id}                LIDERANCA
 
-GET    /api/ideias                         OPERADOR (próprias) · GESTOR/LIDER (todas, filtros)
-POST   /api/ideias                         OPERADOR
-PUT    /api/ideias/{id}                    OPERADOR (autor)
-DELETE /api/ideias/{id}                    OPERADOR (autor)
-PATCH  /api/ideias/{id}/prioridade         GESTOR
-PATCH  /api/ideias/{id}/status             GESTOR (aprovar/rejeitar)
+GET    /api/ideias                          OPERADOR (próprias) · GESTOR/LIDERANCA (todas, filtros status/prioridade/orientação)
+GET    /api/ideias/{id}                     autor · GESTOR · LIDERANCA
+POST   /api/ideias                          OPERADOR
+PUT    /api/ideias/{id}                     OPERADOR (autor, enquanto ENVIADA)
+DELETE /api/ideias/{id}                     OPERADOR (autor, enquanto ENVIADA)
+PATCH  /api/ideias/{id}/prioridade          GESTOR
+PATCH  /api/ideias/{id}/status              GESTOR (aprovar/rejeitar/avançar)
 
-GET    /api/projetos                       GESTOR · LIDER
-GET    /api/projetos/{id}                  GESTOR · LIDER
-POST   /api/projetos                       GESTOR
-PUT    /api/projetos/{id}                  GESTOR
-PATCH  /api/projetos/{id}/progresso        GESTOR
-DELETE /api/projetos/{id}                  GESTOR
+GET    /api/projetos                        GESTOR · LIDERANCA
+GET    /api/projetos/{id}                   GESTOR · LIDERANCA
+POST   /api/projetos                        GESTOR
+PUT    /api/projetos/{id}                   GESTOR
+PATCH  /api/projetos/{id}/progresso         GESTOR (etapa, status, resultados)
+DELETE /api/projetos/{id}                   GESTOR
 
-GET    /api/dashboard/resumo               LIDER  (ROI, lucro, investimento, prazo, produtividade)
-GET    /api/dashboard/estrategias/{id}     LIDER
-GET    /api/dashboard/projetos/{id}        LIDER
-
-POST   /api/ia/ideias/{id}/avaliar         GESTOR   (score + justificativa)
-POST   /api/ia/chat                        GESTOR   (assistente)
-GET    /api/ia/dashboard/insights          LIDER
+GET    /api/dashboard/resumo                LIDERANCA
+GET    /api/dashboard/orientacoes/{id}      LIDERANCA
+GET    /api/dashboard/projetos/{id}         LIDERANCA
+GET    /api/dashboard/gestor                GESTOR (KPIs do painel do app)
 ```
 
-## 6. Arquitetura proposta
+## 8. Arquitetura do backend
 
-- **Stack (a confirmar):** Java 21 + Spring Boot 3, Spring Security + JWT, Spring Data MongoDB,
-  Bean Validation, springdoc-openapi (Swagger), Docker Compose (API + MongoDB).
-  - Obs.: o enunciado cita JPA/Hibernate, mas com MongoDB o equivalente é Spring Data MongoDB — justificar na apresentação.
-- **Camadas:** `controller → service → repository`, `domain` (entidades), `dto` + mappers,
-  `security` (filtro JWT, config de roles), `integration/ai` (cliente IA), `exception` (handler global).
-- **IA:** interface `AiProvider` com implementação Gemini (ou OpenRouter) — chave via variável de ambiente.
-- **Seed:** 1 usuário de cada perfil + dados de exemplo para demo e dashboard.
+- Java 21, Spring Boot 3, Maven, Spring Web, Security + JWT (jjwt), Data MongoDB, Validation,
+  springdoc-openapi (Swagger), Lombok, JUnit 5 + Testcontainers/Mongo, Docker Compose.
+- Pacotes: `controller → service → repository`, `domain`, `dto` + mappers, `security`
+  (filtro JWT, `@PreAuthorize` por role), `config`, `exception` (handler global, erros padronizados).
+- Seed: 3 usuários do app (`operador|gestor|lideranca@aguiabranca.com` / `senha123`) + dados de exemplo.
 
-## 7. Roadmap (até 21/09)
+## 9. Integração do app
 
-| # | Etapa | Entrega |
+- Adicionar Retrofit + OkHttp + kotlinx/Gson; `ApiRepository` substituindo `MockRepository`.
+- Interceptor com o JWT; armazenamento do token (DataStore); base URL por `BuildConfig` (`10.0.2.2:8080` no emulador).
+- Novas telas/ações para cobrir as lacunas (CRUD orientações, editar/excluir ideia, CRUD projetos, vínculo com orientação).
+- Gerar APK final.
+
+## 10. Roadmap (até 21/09)
+
+| # | Etapa | Resultado |
 |---|---|---|
-| 0 | Receber e analisar app v1 (Sprint 1): telas, mocks, contratos esperados | mapa tela → endpoint |
-| 1 | Setup: projeto, Docker Compose, Mongo, Swagger, CI básico | API sobe vazia |
+| 0 | Importar app para `app/` e mapear tela → endpoint | contrato fechado |
+| 1 | Setup backend: Spring Boot, Docker Compose, Mongo, Swagger | API sobe |
 | 2 | Autenticação JWT + roles + seed | login dos 3 perfis |
-| 3 | Estratégias (CRUD + histórico) | |
-| 4 | Ideias (CRUD, priorizar, aprovar, vínculo estratégia) | |
+| 3 | Orientações (CRUD + histórico) | |
+| 4 | Ideias (CRUD, priorizar, aprovar, vínculo) | |
 | 5 | Projetos (CRUD, progresso, resultados) | |
 | 6 | Dashboard / relatórios agregados | |
-| 7 | IA (score de ideias → insights → chat, conforme tempo) | plus |
-| 8 | Integrar app: trocar mocks por chamadas reais, gerar APK/IPA | |
-| 9 | Testes, README, Postman, diagrama, slides, zips | entrega |
+| 7 | Integrar app (Retrofit, JWT, novas telas) + APK | |
+| 8 | Testes, README, Postman, diagrama, slides, zips | entrega |
 
-## 8. Entregáveis
+## 11. Entregáveis
 
 - [ ] `.zip` do backend (camadas claras + README com instruções de execução)
-- [ ] `.zip` do app integrado + **APK** (ou IPA)
-- [ ] Apresentação PDF/PPT: nomes e RMs, diagrama de arquitetura, especificação dos endpoints (rota, método, payload, resposta), explicação da IA
+- [ ] `.zip` do app integrado + **APK**
+- [ ] Apresentação PDF/PPT: nomes e RMs, diagrama de arquitetura, especificação dos endpoints (rota, método, payload, resposta)
 
-## 9. Critérios de avaliação
+## 12. Critérios de avaliação
 
 Implementação técnica 50% · Integração app↔backend 15% · Apresentação/documentação 15% ·
 Qualidade de código 10% · Criatividade/inovação 10%
 
-## 10. Pendências / decisões
+## 13. Pendências
 
-- [ ] Confirmar stack: Java/Spring (recomendado) ou .NET 8
-- [ ] Trazer o app v1 (há `app_de_inovação.zip` e `app_de_Inovação2.zip` em `../fiap-ano-2/` — confirmar se é esse)
-- [ ] Definir provedor de IA e obter chave gratuita
-- [ ] Monorepo (`backend/` + `app/`) ou repositórios separados
 - [ ] Confirmar integrantes/RMs do Grupo 42
+- [ ] Reavaliar Diferencial IA se sobrar tempo
