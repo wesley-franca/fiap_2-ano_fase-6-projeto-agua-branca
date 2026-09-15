@@ -17,10 +17,10 @@ e **app consumindo as APIs sem nenhum mock**.
 | Tema | Decisão |
 |---|---|
 | Backend | Java 21 · Spring Boot 3 · Spring Security + JWT · Spring Data MongoDB · Maven |
-| Banco | MongoDB (local via Docker; nuvem via MongoDB Atlas free) |
+| Banco | MongoDB (local via Docker Compose) |
 | App | App da Sprint 1 (Kotlin · Jetpack Compose · Material 3 · MVVM) |
 | Repositório | Monorepo: `backend/` · `app/` · `docs/` |
-| Deploy | Backend público (Render/Railway + Atlas) para o APK funcionar no celular do avaliador |
+| Deploy | **Adiado** — será definido com colegas e professores após o desenvolvimento (ver §13) |
 | IA | adiada |
 
 > O enunciado cita JPA/Hibernate; com MongoDB o equivalente é **Spring Data MongoDB** — justificar na apresentação.
@@ -63,7 +63,7 @@ PDF de apresentação e vídeo de demonstração.
 | L10 | Liderança: andamento (etapa, status, investimento, prazo, **retorno**) | sem retorno | exibir retorno financeiro |
 | L11 | Dashboard por **estratégia**, por **projeto** e geral, **com gráficos** | KPIs fixos, sem gráficos | endpoints de relatório + gráficos no app |
 | L12 | Sem mocks | tudo mock | remover `MockRepository` |
-| L13 | APK integrado | APK mock | novo APK apontando para backend publicado |
+| L13 | APK integrado | APK mock | novo APK com URL da API configurável |
 
 ### 3.3 Dívidas técnicas a corrigir no app
 
@@ -173,14 +173,14 @@ backend/
 - [ ] B7 Dashboard: agregações gestor, resumo liderança, por orientação, por projeto
 - [ ] B8 Validação (Bean Validation), handler global, CORS, OpenAPI com esquema Bearer
 - [ ] B9 Testes: services (regras/permissões) + integração auth e fluxo principal
-- [ ] B10 Deploy: Dockerfile, MongoDB Atlas, Render/Railway, variáveis `JWT_SECRET`, `MONGODB_URI`
+- [ ] B10 Containerização: Dockerfile + docker-compose (API + Mongo), config por variáveis `JWT_SECRET`, `MONGODB_URI` — pronto para qualquer deploy futuro
 - [ ] B11 CI GitHub Actions: build + testes do backend (e build do APK)
 - [ ] B12 Collection Postman/Insomnia exportada em `docs/`
 
 ## 8. App — tarefas de integração
 
 - [ ] A1 Importar código v1 para `app/` (sem lixo) — commit "v1 Sprint 1" como baseline
-- [ ] A2 Dependências: Retrofit, OkHttp (logging), kotlinx-serialization ou Gson, DataStore; `BuildConfig.API_BASE_URL` (debug `http://10.0.2.2:8080/api`, release URL publicada); `networkSecurityConfig` para HTTP local
+- [ ] A2 Dependências: Retrofit, OkHttp (logging), kotlinx-serialization ou Gson, DataStore; `BuildConfig.API_BASE_URL` (padrão `http://10.0.2.2:8080/api` no emulador; sobrescrevível via `gradle.properties` para IP da máquina/URL futura); `networkSecurityConfig` para HTTP local
 - [ ] A3 Camada de dados: `ApiService`, DTOs, `AuthInterceptor` (Bearer), tratamento de 401 → logout, `Repository` interfaces + implementações; **remover `MockRepository`**
 - [ ] A4 Modelos: valores numéricos/datas, formatação (moeda BRL, datas relativas) na UI; enums alinhados à API
 - [ ] A5 Login real: token persistido, restaurar sessão com `/auth/me`, remover SSO e credenciais de teste (ou manter só em debug)
@@ -197,18 +197,18 @@ backend/
   - [ ] A13 CRUD de orientações + tela de histórico
   - [ ] A14 Andamento de projetos com retorno financeiro + detalhe por projeto/orientação
 - [ ] A15 Navegação: novas rotas, bottom bar/abas por perfil, guarda de rota por role
-- [ ] A16 Gerar APK (release assinado ou debug) apontando para o backend publicado; testar em aparelho físico
+- [ ] A16 Gerar APK (debug/release) com URL configurável; testar no emulador e em aparelho físico na mesma rede
 
 ## 9. Documentação e entrega
 
-- [ ] D1 `README.md` raiz: visão geral, arquitetura, como rodar (Docker), usuários de teste, link Swagger/deploy
+- [ ] D1 `README.md` raiz: visão geral, arquitetura, como rodar (Docker), usuários de teste, Swagger
 - [ ] D2 `backend/README.md` com instruções de execução (exigido)
 - [ ] D3 Diagrama de arquitetura (app ↔ API ↔ MongoDB, camadas, JWT)
 - [ ] D4 Especificação de endpoints (rota, método, payload, resposta) — gerar a partir do OpenAPI
 - [ ] D5 Apresentação PDF/PPT: nomes e RMs, diagrama, endpoints, prints do app, v1 → v2
 - [ ] D6 Vídeo de demonstração dos 3 perfis (recomendado, a v1 teve)
 - [ ] D7 Empacotar: `backend.zip` (sem `target/`), `app.zip` (sem `build/`, com APK), apresentação
-- [ ] D8 Checklist final: backend publicado no ar, APK instala e loga com os 3 perfis, nenhum mock restante
+- [ ] D8 Checklist final: backend sobe com `docker compose up`, APK instala e loga com os 3 perfis, nenhum mock restante
 
 ## 10. Cronograma (hoje 14/09 → entrega 21/09)
 
@@ -228,23 +228,22 @@ backend/
 | Critério | Peso | Cobertura |
 |---|---|---|
 | Implementação técnica funcional | 50% | B2–B7, A3–A15 |
-| Integração app ↔ backend | 15% | A3, A16, deploy B10 |
+| Integração app ↔ backend | 15% | A3, A16, B10 |
 | Apresentação e documentação | 15% | D1–D6, Swagger |
 | Qualidade de código e boas práticas | 10% | camadas, DTOs, validação, testes B9, CI B11 |
-| Criatividade e inovação | 10% | gráficos, histórico, ideia → projeto, deploy (IA fica como extra futuro) |
+| Criatividade e inovação | 10% | gráficos, histórico, ideia → projeto (IA fica como extra futuro) |
 
 ## 12. Riscos
 
 | Risco | Mitigação |
 |---|---|
 | Prazo curto, grupo com 1 integrante | priorizar obrigatórios; cortar extras (vídeo, CI) antes de funcionalidades |
-| Avaliador não consegue acessar `localhost` | backend publicado + APK release com URL pública; README com Docker como alternativa |
-| Free tier "dorme" (Render) | aviso no README; chamada de warm-up ao abrir o app |
+| Avaliador não consegue acessar `localhost` | URL da API configurável no build; estratégia de deploy a alinhar com colegas/professores (§13) |
 | Toolchain antiga do app (AGP 8.1.2 + SDK 35) | validar build logo no A1; atualizar AGP/Kotlin só se quebrar |
-| HTTP em emulador bloqueado | `networkSecurityConfig` só no debug; release em HTTPS |
+| HTTP bloqueado no Android | `networkSecurityConfig` liberando cleartext para o host de desenvolvimento |
 
 ## 13. Pendências
 
 - [ ] Integrantes e RMs do Grupo 42 (hoje só Wesley na plataforma)
-- [ ] Escolher host de deploy (Render ou Railway) e criar cluster MongoDB Atlas
+- [ ] **Deploy (adiado):** alinhar com colegas e professores após o desenvolvimento — onde hospedar API/Mongo e para qual URL gerar o APK final
 - [ ] Reavaliar Diferencial IA se sobrar tempo
