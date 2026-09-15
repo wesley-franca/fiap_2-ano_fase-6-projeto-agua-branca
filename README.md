@@ -5,7 +5,7 @@ com JWT e perfis operador/gestor/liderança, integrado ao app Android da Sprint 
 
 | Pasta | Conteúdo |
 |---|---|
-| [`backend/`](backend/) | API REST — Java 21, Spring Boot 3, Spring Security (JWT), MongoDB |
+| [`backend/`](backend/) | API REST — Java 21, Spring Boot 4, Spring Security (JWT), MongoDB |
 | [`app/`](app/) | App Android — Kotlin, Jetpack Compose |
 | [`docs/`](docs/) | Arquitetura, endpoints, Postman, apresentação |
 

@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: inovacao-api
+  mongodb:
+    uri: ${MONGODB_URI:mongodb://localhost:27017/inovacao}
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-components: always
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

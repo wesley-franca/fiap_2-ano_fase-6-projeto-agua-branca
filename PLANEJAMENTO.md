@@ -16,7 +16,7 @@ e **app consumindo as APIs sem nenhum mock**.
 
 | Tema | Decisão |
 |---|---|
-| Backend | Java 21 · Spring Boot 3 · Spring Security + JWT · Spring Data MongoDB · Maven |
+| Backend | Java 21 · Spring Boot 4 · Spring Security + JWT · Spring Data MongoDB · Maven |
 | Banco | MongoDB (local via Docker Compose) |
 | App | App da Sprint 1 (Kotlin · Jetpack Compose · Material 3 · MVVM) |
 | Repositório | Monorepo: `backend/` · `app/` · `docs/` |
@@ -164,7 +164,7 @@ backend/
 ├── Dockerfile · docker-compose.yml · .env.example · README.md
 ```
 
-- [ ] B1 Setup Spring Initializr (web, security, data-mongodb, validation, actuator, lombok, springdoc, jjwt), Docker Compose
+- [x] B1 Setup Spring Initializr (Boot 4.1.1, Java 21: webmvc, security, data-mongodb, validation, actuator, lombok, springdoc 3.1.1, testcontainers), Dockerfile multi-stage, Docker Compose (API + Mongo 8.0) — jjwt entra no B2
 - [ ] B2 Auth: login, BCrypt, JWT (expiração), filtro, 401/403 padronizados, `/auth/me`
 - [ ] B3 Seed: `operador|gestor|lideranca@aguiabranca.com` / `senha123` + dados da v1 (3 orientações, 3 ideias, 3 projetos) com valores numéricos
 - [ ] B4 Orientações: CRUD, soft delete, histórico automático, vigente
@@ -179,7 +179,7 @@ backend/
 
 ## 8. App — tarefas de integração
 
-- [ ] A1 Importar código v1 para `app/` (sem lixo) — commit "v1 Sprint 1" como baseline
+- [x] A1 Importar código v1 para `app/` (sem lixo) — commit baseline + wrapper Gradle recriado (o jar da v1 estava vazio e faltava `gradlew`); `./gradlew assembleDebug` OK
 - [ ] A2 Dependências: Retrofit, OkHttp (logging), kotlinx-serialization ou Gson, DataStore; `BuildConfig.API_BASE_URL` (padrão `http://10.0.2.2:8080/api` no emulador; sobrescrevível via `gradle.properties` para IP da máquina/URL futura); `networkSecurityConfig` para HTTP local
 - [ ] A3 Camada de dados: `ApiService`, DTOs, `AuthInterceptor` (Bearer), tratamento de 401 → logout, `Repository` interfaces + implementações; **remover `MockRepository`**
 - [ ] A4 Modelos: valores numéricos/datas, formatação (moeda BRL, datas relativas) na UI; enums alinhados à API
