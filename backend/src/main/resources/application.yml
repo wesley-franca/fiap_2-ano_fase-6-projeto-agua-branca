@@ -19,3 +19,12 @@ management:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+app:
+  jwt:
+    # Valor padrão apenas para desenvolvimento local — defina JWT_SECRET (>= 32 bytes) fora dele.
+    secret: ${JWT_SECRET:dev-local-inovacao-aguia-branca-troque-este-segredo}
+    expiration: ${JWT_EXPIRATION:8h}
+    issuer: inovacao-api
+  seed:
+    enabled: ${SEED_ENABLED:true}

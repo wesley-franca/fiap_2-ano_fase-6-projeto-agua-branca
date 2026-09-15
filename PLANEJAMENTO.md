@@ -153,7 +153,7 @@ Swagger em `/swagger-ui.html` · health em `/actuator/health`.
 backend/
 ├── src/main/java/br/com/aguiabranca/inovacao/
 │   ├── config/        (OpenAPI, CORS, Mongo auditing, seed)
-│   ├── security/      (JwtService, JwtAuthFilter, SecurityConfig, UserDetails)
+│   ├── security/      (JwtConfig, TokenService, entry point 401 e handler 403)
 │   ├── controller/    (Auth, Orientacao, Ideia, Projeto, Dashboard)
 │   ├── service/       (regras de negócio e permissões por dono)
 │   ├── repository/    (MongoRepository + agregações)
@@ -164,9 +164,9 @@ backend/
 ├── Dockerfile · docker-compose.yml · .env.example · README.md
 ```
 
-- [x] B1 Setup Spring Initializr (Boot 4.1.1, Java 21: webmvc, security, data-mongodb, validation, actuator, lombok, springdoc 3.1.1, testcontainers), Dockerfile multi-stage, Docker Compose (API + Mongo 8.0) — jjwt entra no B2
-- [ ] B2 Auth: login, BCrypt, JWT (expiração), filtro, 401/403 padronizados, `/auth/me`
-- [ ] B3 Seed: `operador|gestor|lideranca@aguiabranca.com` / `senha123` + dados da v1 (3 orientações, 3 ideias, 3 projetos) com valores numéricos
+- [x] B1 Setup Spring Initializr (Boot 4.1.1, Java 21: webmvc, security, data-mongodb, validation, actuator, lombok, springdoc 3.1.1, testcontainers), Dockerfile multi-stage, Docker Compose (API + Mongo 8.0) — JWT entra no B2 (OAuth2 Resource Server)
+- [x] B2 Auth: login com BCrypt (tempo constante p/ e-mail inexistente), JWT HS256 com expiração e claim `role`, validação via OAuth2 Resource Server, 401/403 em JSON padronizado, `/auth/me`, `@EnableMethodSecurity`
+- [x] B3 Seed idempotente: 5 usuários (3 contas da v1 + 2 operadores), 3 orientações, 5 ideias, 11 projetos que reproduzem os KPIs da v1; índices `@Indexed` criados na inicialização
 - [ ] B4 Orientações: CRUD, soft delete, histórico automático, vigente
 - [ ] B5 Ideias: CRUD do operador (dono), filtros, prioridade, fluxo de status, vínculo orientação
 - [ ] B6 Projetos: CRUD, progresso, resultados, atualizações, vínculo orientação/ideia
