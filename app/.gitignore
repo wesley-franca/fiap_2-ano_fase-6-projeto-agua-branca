@@ -1,0 +1,33 @@
+# Gradle files
+.gradle/
+build/
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Local configuration file
+local.properties
+
+# Log/OS Files
+*.log
+*.DS_Store
+
+# Android Studio
+.idea/
+.classpath
+.project
+.settings/
+*.iml
+*.iws
+*.ipr
+
+# The .gradle files under build should be gitignored
+!gradle/wrapper/gradle-wrapper.jar
+
+# Keystore files
+*.jks
+*.keystore
+
+# Google Services
+google-services.json
