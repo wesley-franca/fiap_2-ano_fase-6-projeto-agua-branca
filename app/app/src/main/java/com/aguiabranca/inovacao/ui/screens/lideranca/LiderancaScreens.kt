@@ -16,6 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.aguiabranca.inovacao.ui.components.Carregando
+import com.aguiabranca.inovacao.ui.components.ListaVazia
+import com.aguiabranca.inovacao.ui.components.MensagemDeErro
 import com.aguiabranca.inovacao.ui.viewmodel.LiderancaViewModel
 
 private val SuccessGreen = Color(0xFF4CAF50)
@@ -57,6 +60,14 @@ fun LiderancaDashboardScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
+
+            uiState.errorMessage?.let { erro ->
+                MensagemDeErro(mensagem = erro, onTentarNovamente = viewModel::carregar)
+            }
+
+            if (uiState.isLoading && uiState.projetos.isEmpty()) {
+                Carregando()
+            }
 
             // KPI Grid
             Row(
@@ -170,6 +181,10 @@ fun LiderancaDashboardScreen(
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
+
+            if (uiState.projetos.isEmpty() && !uiState.isLoading) {
+                ListaVazia("Nenhum projeto em andamento")
+            }
 
             uiState.projetos.forEach { projeto ->
                 Card(

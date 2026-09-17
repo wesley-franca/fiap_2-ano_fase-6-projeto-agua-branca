@@ -63,8 +63,15 @@ app/src/main/java/com/aguiabranca/inovacao/
   dashboard executivo é recusado para quem não é da liderança.
 - Erros da API viram mensagem legível na tela (sessão expirada, sem permissão, servidor fora do ar).
 
+## Sessão
+
+O token e o usuário ficam salvos no aparelho (DataStore). Ao abrir o app, a sessão é restaurada e
+confirmada com `GET /api/auth/me` antes de qualquer tela aparecer — por isso o login não pisca na abertura.
+Se a API recusar o token durante o uso, o app derruba a sessão e volta ao login avisando que ela expirou.
+Sair pelo botão de logout apaga o token do aparelho.
+
 ## Pendências desta etapa
 
-- O token ainda vive apenas em memória: fechar o app exige novo login (entra junto com a tela de login definitiva).
 - O botão **Rejeitar** envia um motivo padrão; a tela de justificativa entra na evolução da fila do gestor.
-- O botão **SSO** e o texto de credenciais de teste continuam na tela de login e serão removidos.
+- Ainda faltam as telas novas: CRUD de orientações (liderança), editar e excluir ideia (operador),
+  cadastro de projetos (gestor) e os gráficos do dashboard.

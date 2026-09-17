@@ -3,13 +3,18 @@ package com.aguiabranca.inovacao
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.aguiabranca.inovacao.data.session.Sessao
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -45,6 +50,23 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
     val authUiState by authViewModel.uiState.collectAsState()
+    val sessaoExpirada by Sessao.expirada.collectAsState()
+
+    // A API recusou o token durante o uso: derruba a sessão e volta ao login.
+    LaunchedEffect(sessaoExpirada) {
+        if (sessaoExpirada) {
+            authViewModel.sessaoExpirou()
+            navController.navigate("login") { popUpTo(0) { inclusive = true } }
+        }
+    }
+
+    // Enquanto o app confere se existe sessão salva, evita piscar a tela de login.
+    if (authUiState.isRestoring) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
 
     NavHost(
         navController = navController,

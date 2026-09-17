@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aguiabranca.inovacao.data.model.User
 import com.aguiabranca.inovacao.data.repository.InovacaoRepository
+import com.aguiabranca.inovacao.data.session.Sessao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 data class AuthUiState(
     val isLoading: Boolean = false,
+    /** Verdadeiro enquanto o app confere se existe uma sessão salva. */
+    val isRestoring: Boolean = true,
     val email: String = "",
     val password: String = "",
     val currentUser: User? = null,
@@ -20,6 +23,21 @@ data class AuthUiState(
 class AuthViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState
+
+    init {
+        restaurarSessao()
+    }
+
+    private fun restaurarSessao() {
+        viewModelScope.launch {
+            val usuario = InovacaoRepository.restaurarSessao()
+            _uiState.value = if (usuario != null) {
+                AuthUiState(isRestoring = false, currentUser = usuario, email = usuario.email, isLoggedIn = true)
+            } else {
+                AuthUiState(isRestoring = false)
+            }
+        }
+    }
 
     fun updateEmail(email: String) {
         _uiState.value = _uiState.value.copy(email = email, errorMessage = null)
@@ -42,6 +60,7 @@ class AuthViewModel : ViewModel() {
             InovacaoRepository.login(estado.email, estado.password)
                 .onSuccess { usuario ->
                     _uiState.value = AuthUiState(
+                        isRestoring = false,
                         currentUser = usuario,
                         email = estado.email,
                         isLoggedIn = true
@@ -57,7 +76,18 @@ class AuthViewModel : ViewModel() {
     }
 
     fun logout() {
-        InovacaoRepository.logout()
-        _uiState.value = AuthUiState()
+        viewModelScope.launch {
+            InovacaoRepository.logout()
+            _uiState.value = AuthUiState(isRestoring = false)
+        }
+    }
+
+    /** Chamado quando a API recusa o token durante o uso do app. */
+    fun sessaoExpirou() {
+        Sessao.expiracaoTratada()
+        _uiState.value = AuthUiState(
+            isRestoring = false,
+            errorMessage = "Sua sessão expirou. Entre novamente."
+        )
     }
 }

@@ -36,7 +36,18 @@ object InovacaoRepository {
 
     suspend fun usuarioAtual(): Result<User> = chamar { api.me().paraUsuario() }
 
-    fun logout() = Sessao.encerrar()
+    /**
+     * Recupera a sessão salva no disco e confirma o token com a API.
+     * Retorna null quando não há sessão salva ou quando o token não vale mais.
+     */
+    suspend fun restaurarSessao(): User? {
+        Sessao.restaurar() ?: return null
+        return usuarioAtual()
+            .onSuccess { Sessao.atualizarUsuario(it) }
+            .getOrNull()
+    }
+
+    suspend fun logout() = Sessao.encerrar()
 
     suspend fun orientacoes(apenasVigentes: Boolean = false): Result<List<Orientacao>> = chamar {
         api.orientacoes(if (apenasVigentes) true else null).map { it.paraOrientacao() }
@@ -154,6 +165,9 @@ object InovacaoRepository {
             Result.success(bloco())
         } catch (e: HttpException) {
             val mensagem = ApiClient.mensagemDeErro(e.response()?.errorBody()?.string())
+            if (e.code() == 401) {
+                Sessao.expirar()
+            }
             Result.failure(Exception(mensagem ?: mensagemPadrao(e.code())))
         } catch (e: IOException) {
             Result.failure(Exception("Sem conexão com o servidor. Verifique se a API está no ar."))

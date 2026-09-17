@@ -141,32 +141,6 @@ fun LoginScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedButton(
-            onClick = { },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-        ) {
-            Text("Continuar com SSO")
-        }
-
         Spacer(modifier = Modifier.height(32.dp))
-
-        Text(
-            text = "Credenciais de teste:\n" +
-                    "operador@aguiabranca.com\n" +
-                    "gestor@aguiabranca.com\n" +
-                    "lideranca@aguiabranca.com\n" +
-                    "Senha: senha123",
-            style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier
-                .background(
-                    color = Color(0xFFF5F5F5),
-                    shape = MaterialTheme.shapes.small
-                )
-                .padding(16.dp)
-        )
     }
 }

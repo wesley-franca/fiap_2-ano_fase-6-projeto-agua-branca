@@ -16,6 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.aguiabranca.inovacao.ui.components.Carregando
+import com.aguiabranca.inovacao.ui.components.ListaVazia
+import com.aguiabranca.inovacao.ui.components.MensagemDeErro
 import com.aguiabranca.inovacao.ui.viewmodel.GestorViewModel
 
 private val PrimaryBlue = Color(0xFF4C63DD)
@@ -83,11 +86,21 @@ fun GestorPainelScreen(
                 )
             }
 
+            uiState.errorMessage?.let { erro ->
+                MensagemDeErro(mensagem = erro, onTentarNovamente = viewModel::carregar)
+            }
+
             Text(
                 text = "Ideias para priorizar",
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
+
+            if (uiState.isLoading && uiState.ideiasParaAprovar.isEmpty()) {
+                Carregando()
+            } else if (uiState.ideiasParaAprovar.isEmpty()) {
+                ListaVazia("Nenhuma ideia aguardando avaliação")
+            }
 
             uiState.ideiasParaAprovar.take(2).forEach { idea ->
                 Card(
@@ -146,6 +159,10 @@ fun GestorPainelScreen(
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
+
+            if (uiState.meusProjetos.isEmpty() && !uiState.isLoading) {
+                ListaVazia("Nenhum projeto cadastrado")
+            }
 
             uiState.meusProjetos.take(2).forEach { projeto ->
                 Card(
@@ -297,6 +314,16 @@ fun FilaIdeiasScreen(
                     onClick = {},
                     label = { Text("Por área") }
                 )
+            }
+
+            uiState.errorMessage?.let { erro ->
+                MensagemDeErro(mensagem = erro, onTentarNovamente = viewModel::carregar)
+            }
+
+            if (uiState.isLoading && uiState.ideiasParaAprovar.isEmpty()) {
+                Carregando()
+            } else if (uiState.ideiasParaAprovar.isEmpty()) {
+                ListaVazia("A fila está vazia")
             }
 
             uiState.ideiasParaAprovar.forEach { idea ->

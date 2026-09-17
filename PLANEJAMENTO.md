@@ -194,8 +194,9 @@ backend/
 - [x] A3 Camada de dados: `ApiService` (Retrofit), DTOs, interceptor com Bearer, erros da API traduzidos para mensagem legível,
   `InovacaoRepository` único e **`MockRepository` removido**; ViewModels com carregamento e erro
 - [ ] A4 Modelos: valores numéricos/datas, formatação (moeda BRL, datas relativas) na UI; enums alinhados à API
-- [ ] A5 Login real: token persistido, restaurar sessão com `/auth/me`, remover SSO e credenciais de teste (ou manter só em debug)
-- [ ] A6 Estados de UI: loading, erro com retry, vazio, pull-to-refresh
+- [x] A5 Login real: token e usuário persistidos em DataStore, sessão restaurada e validada com `/auth/me` na abertura,
+  401 durante o uso derruba a sessão e volta ao login com aviso; SSO e credenciais de teste removidos da tela
+- [x] A6 Estados de UI: carregando, erro com "Tentar de novo" e lista vazia nas telas dos três perfis — pull-to-refresh fica para o A15
 - [ ] **Operador**
   - [ ] A7 Minhas ideias (só as próprias) + detalhe
   - [ ] A8 Nova/editar ideia com categoria (select) e **orientação vinculada**; excluir

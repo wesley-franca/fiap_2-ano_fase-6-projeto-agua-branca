@@ -17,6 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aguiabranca.inovacao.data.model.Idea
 import com.aguiabranca.inovacao.data.model.IdeaStatus
+import com.aguiabranca.inovacao.ui.components.Carregando
+import com.aguiabranca.inovacao.ui.components.ListaVazia
+import com.aguiabranca.inovacao.ui.components.MensagemDeErro
 import com.aguiabranca.inovacao.ui.viewmodel.OperadorViewModel
 
 private val PrimaryBlue = Color(0xFF4C63DD)
@@ -100,6 +103,10 @@ fun OperadorHomeScreen(
                 }
             }
 
+            uiState.errorMessage?.let { erro ->
+                MensagemDeErro(mensagem = erro, onTentarNovamente = viewModel::carregar)
+            }
+
             Text(
                 text = "Minhas ideias",
                 style = MaterialTheme.typography.titleMedium,
@@ -110,15 +117,10 @@ fun OperadorHomeScreen(
                 IdeaCardOperador(idea)
             }
 
-            if (uiState.minhasIdeias.isEmpty()) {
-                Text(
-                    text = "Nenhuma ideia cadastrada\nClique no + para criar uma",
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(32.dp),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                    color = MaterialTheme.colorScheme.outline
-                )
+            if (uiState.isLoading && uiState.minhasIdeias.isEmpty()) {
+                Carregando()
+            } else if (uiState.minhasIdeias.isEmpty()) {
+                ListaVazia("Nenhuma ideia cadastrada\nClique no + para criar uma")
             }
 
             Spacer(modifier = Modifier.height(80.dp))
