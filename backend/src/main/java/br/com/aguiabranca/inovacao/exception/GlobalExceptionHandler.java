@@ -41,6 +41,11 @@ public class GlobalExceptionHandler {
         return responder(HttpStatus.FORBIDDEN, "Seu perfil não tem permissão para esta operação", request);
     }
 
+    @ExceptionHandler(RecursoNaoEncontradoException.class)
+    ResponseEntity<ErrorResponse> naoEncontrado(RecursoNaoEncontradoException ex, HttpServletRequest request) {
+        return responder(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    }
+
     @ExceptionHandler(NoResourceFoundException.class)
     ResponseEntity<ErrorResponse> rotaInexistente(HttpServletRequest request) {
         return responder(HttpStatus.NOT_FOUND, "Recurso não encontrado", request);

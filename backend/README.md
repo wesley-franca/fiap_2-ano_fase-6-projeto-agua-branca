@@ -69,6 +69,23 @@ No Swagger, clique em **Authorize** e cole o token. Erros seguem o formato:
 { "timestamp": "...", "status": 401, "error": "Unauthorized", "message": "E-mail ou senha inválidos", "path": "/api/auth/login" }
 ```
 
+## Endpoints
+
+| Método | Rota | Perfis |
+|---|---|---|
+| POST | `/api/auth/login` | público |
+| GET | `/api/auth/me` | autenticado |
+| GET | `/api/orientacoes?vigente=&area=` | todos |
+| GET | `/api/orientacoes/{id}` | todos |
+| GET | `/api/orientacoes/{id}/historico` | todos |
+| POST | `/api/orientacoes` | LIDERANCA |
+| PUT | `/api/orientacoes/{id}` | LIDERANCA |
+| DELETE | `/api/orientacoes/{id}` | LIDERANCA |
+
+A exclusão de orientação é lógica: ela some das consultas, mas o histórico e os vínculos com ideias e
+projetos são preservados. Cada criação, alteração e exclusão gera um registro no histórico (data, ação,
+título, categoria, campanha e autor).
+
 ## Executar sem Docker (desenvolvimento)
 
 Pré-requisitos: JDK 21 e um MongoDB acessível em `localhost:27017`

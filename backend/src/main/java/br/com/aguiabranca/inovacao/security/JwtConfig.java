@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 @EnableConfigurationProperties(JwtProperties.class)
 public class JwtConfig {
 
-    static final String ROLE_CLAIM = "role";
+    public static final String ROLE_CLAIM = "role";
 
     @Bean
     JwtEncoder jwtEncoder(JwtProperties properties) {

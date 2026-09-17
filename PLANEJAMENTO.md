@@ -167,10 +167,13 @@ backend/
 - [x] B1 Setup Spring Initializr (Boot 4.1.1, Java 21: webmvc, security, data-mongodb, validation, actuator, lombok, springdoc 3.1.1, testcontainers), Dockerfile multi-stage, Docker Compose (API + Mongo 8.0) — JWT entra no B2 (OAuth2 Resource Server)
 - [x] B2 Auth: login com BCrypt (tempo constante p/ e-mail inexistente), JWT HS256 com expiração e claim `role`, validação via OAuth2 Resource Server, 401/403 em JSON padronizado, `/auth/me`, `@EnableMethodSecurity`
 - [x] B3 Seed idempotente: 5 usuários (3 contas da v1 + 2 operadores), 3 orientações, 5 ideias, 11 projetos que reproduzem os KPIs da v1; índices `@Indexed` criados na inicialização
-- [ ] B4 Orientações: CRUD, soft delete, histórico automático, vigente
+- [x] B4 Orientações: CRUD (escrita só para LIDERANCA), exclusão lógica, histórico automático (criação/atualização/exclusão), filtros `vigente` e `area`
 - [ ] B5 Ideias: CRUD do operador (dono), filtros, prioridade, fluxo de status, vínculo orientação
 - [ ] B6 Projetos: CRUD, progresso, resultados, atualizações, vínculo orientação/ideia
 - [ ] B7 Dashboard: agregações gestor, resumo liderança, por orientação, por projeto
+- **Convenção de DTOs:** campos booleanos/numéricos opcionais usam wrapper (`Boolean`, `Integer`), nunca primitivo —
+  no Jackson 3 um primitivo ausente ou nulo faz a requisição falhar com 400 antes da validação.
+
 - [ ] B8 Validação (Bean Validation), handler global, CORS, OpenAPI com esquema Bearer
 - [ ] B9 Testes: services (regras/permissões) + integração auth e fluxo principal
 - [ ] B10 Containerização: Dockerfile + docker-compose (API + Mongo), config por variáveis `JWT_SECRET`, `MONGODB_URI` — pronto para qualquer deploy futuro
