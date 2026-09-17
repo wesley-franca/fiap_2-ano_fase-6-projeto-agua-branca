@@ -20,7 +20,8 @@ e **app consumindo as APIs sem nenhum mock**.
 | Banco | MongoDB (local via Docker Compose) |
 | App | App da Sprint 1 (Kotlin · Jetpack Compose · Material 3 · MVVM) |
 | Repositório | Monorepo: `backend/` · `app/` · `docs/` |
-| Deploy | **Adiado** — será definido com colegas e professores após o desenvolvimento (ver §13) |
+| Entrega | **Execução local com Docker** — confirmado com o tutor: a equipe de correção roda tudo na máquina dela,
+  desde que o README da raiz explique o passo a passo. Sem deploy em nuvem |
 | IA | adiada |
 
 > O enunciado cita JPA/Hibernate; com MongoDB o equivalente é **Spring Data MongoDB** — justificar na apresentação.
@@ -182,7 +183,8 @@ backend/
 
 - [ ] B8 Validação (Bean Validation), handler global, CORS, OpenAPI com esquema Bearer
 - [ ] B9 Testes: services (regras/permissões) + integração auth e fluxo principal
-- [ ] B10 Containerização: Dockerfile + docker-compose (API + Mongo), config por variáveis `JWT_SECRET`, `MONGODB_URI` — pronto para qualquer deploy futuro
+- [x] B10 Containerização: Dockerfile multi-stage + docker-compose (API + Mongo 8.0) com healthcheck, tudo
+  configurável por variáveis (`JWT_SECRET`, `JWT_EXPIRATION`, `MONGODB_URI`, `SEED_ENABLED`, `API_PORT`)
 - [ ] B11 CI GitHub Actions: build + testes do backend (e build do APK)
 - [ ] B12 Collection Postman/Insomnia exportada em `docs/`
 
@@ -216,7 +218,7 @@ backend/
 - [x] A15 Navegação: um grafo por perfil (operador, gestor, liderança). O ViewModel é criado ao entrar no grafo e
   compartilhado entre as telas daquele perfil, então entrar como operador não dispara as chamadas dos outros perfis
   (que voltariam 403). Trocar de usuário leva para a home do novo perfil
-- [ ] A16 Gerar APK (debug/release) com URL configurável; testar no emulador e em aparelho físico na mesma rede
+- [ ] A16 Gerar o APK da entrega (padrão: emulador acessando a API local) e testar o fluxo dos 3 perfis
 
 ## 9. Documentação e entrega
 
@@ -257,12 +259,12 @@ backend/
 | Risco | Mitigação |
 |---|---|
 | Prazo curto, grupo com 1 integrante | priorizar obrigatórios; cortar extras (vídeo, CI) antes de funcionalidades |
-| Avaliador não consegue acessar `localhost` | URL da API configurável no build; estratégia de deploy a alinhar com colegas/professores (§13) |
+| Correção não conseguir rodar o ambiente | README da raiz com passo a passo, pré-requisitos e solução de problemas; APK já aponta para a API local |
 | Toolchain antiga do app (AGP 8.1.2 + SDK 35) | validar build logo no A1; atualizar AGP/Kotlin só se quebrar |
 | HTTP bloqueado no Android | `networkSecurityConfig` liberando cleartext para o host de desenvolvimento |
 
 ## 13. Pendências
 
 - [ ] Integrantes e RMs do Grupo 42 (hoje só Wesley na plataforma)
-- [ ] **Deploy (adiado):** alinhar com colegas e professores após o desenvolvimento — onde hospedar API/Mongo e para qual URL gerar o APK final
+- [x] **Forma de entrega definida (17/09):** correção roda localmente com Docker; nenhuma hospedagem necessária
 - [ ] Reavaliar Diferencial IA se sobrar tempo
