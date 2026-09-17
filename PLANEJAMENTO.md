@@ -202,9 +202,11 @@ backend/
   - [x] A8 Formulário único de cadastro e edição com seletor de orientação estratégica; exclusão com confirmação.
     Edição e exclusão só aparecem enquanto a ideia está `ENVIADA`, como a API exige
 - [ ] **Gestor**
-  - [ ] A9 Painel com KPIs reais
-  - [ ] A10 Fila com filtros funcionais (status/área/prioridade), detalhe, **priorizar**, aprovar/rejeitar com comentário
-  - [ ] A11 Projetos: lista, criar (a partir de ideia aprovada), editar, excluir, atualizar progresso, registrar resultados
+  - [x] A9 Painel com KPIs reais vindos de `/api/dashboard/gestor`, com atalhos para a fila e para os projetos
+  - [x] A10 Fila com filtros funcionais (etapa, prioridade e área), tela de análise da ideia com priorização,
+    avanço de etapa e rejeição exigindo motivo digitado pelo gestor
+  - [x] A11 Projetos: lista, cadastro, edição, exclusão com confirmação, atualização de progresso (etapa, %, status,
+    observação) e registro de resultados (retorno, custo evitado, produtividade)
 - [ ] **Liderança**
   - [ ] A12 Dashboard com KPIs reais + **gráficos** (Vico ou Canvas): retorno por orientação, status dos projetos, investimento × retorno
   - [ ] A13 CRUD de orientações + tela de histórico

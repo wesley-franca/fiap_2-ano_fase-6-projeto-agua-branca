@@ -38,8 +38,26 @@ interface ApiService {
     @PATCH("api/ideias/{id}/status")
     suspend fun alterarStatusIdeia(@Path("id") id: String, @Body request: StatusIdeiaDto): IdeiaDto
 
+    @PATCH("api/ideias/{id}/prioridade")
+    suspend fun priorizarIdeia(@Path("id") id: String, @Body request: PrioridadeRequestDto): IdeiaDto
+
     @GET("api/projetos")
     suspend fun projetos(): List<ProjetoDto>
+
+    @POST("api/projetos")
+    suspend fun criarProjeto(@Body request: ProjetoRequestDto): ProjetoDto
+
+    @PUT("api/projetos/{id}")
+    suspend fun atualizarProjeto(@Path("id") id: String, @Body request: ProjetoRequestDto): ProjetoDto
+
+    @PATCH("api/projetos/{id}/progresso")
+    suspend fun registrarProgresso(@Path("id") id: String, @Body request: ProgressoRequestDto): ProjetoDto
+
+    @PATCH("api/projetos/{id}/resultados")
+    suspend fun registrarResultados(@Path("id") id: String, @Body request: ResultadosRequestDto): ProjetoDto
+
+    @DELETE("api/projetos/{id}")
+    suspend fun excluirProjeto(@Path("id") id: String)
 
     @GET("api/dashboard/gestor")
     suspend fun painelGestor(): PainelGestorDto

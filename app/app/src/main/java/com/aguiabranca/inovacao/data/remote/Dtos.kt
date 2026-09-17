@@ -71,15 +71,47 @@ data class StatusIdeiaDto(val status: String, val comentario: String? = null)
 data class ProjetoDto(
     val id: String,
     val nome: String,
+    val descricao: String?,
     val responsavelNome: String?,
+    val orientacaoId: String?,
+    val ideiaOrigemId: String?,
     val etapa: Int,
     val totalEtapas: Int,
     val progresso: Int,
     val status: String,
+    val dataInicio: String?,
     val prazo: String?,
     val investimento: Double?,
-    val retornoFinanceiro: Double?
+    val retornoFinanceiro: Double?,
+    val custoEvitado: Double?,
+    val aumentoProdutividade: Double?
 )
+
+data class ProjetoRequestDto(
+    val nome: String,
+    val descricao: String?,
+    val orientacaoId: String,
+    val ideiaOrigemId: String?,
+    val totalEtapas: Int,
+    val dataInicio: String,
+    val prazo: String,
+    val investimento: Double
+)
+
+data class ProgressoRequestDto(
+    val etapa: Int,
+    val progresso: Int,
+    val status: String?,
+    val observacao: String?
+)
+
+data class ResultadosRequestDto(
+    val retornoFinanceiro: Double,
+    val custoEvitado: Double?,
+    val aumentoProdutividade: Double?
+)
+
+data class PrioridadeRequestDto(val prioridade: String)
 
 // ----- Dashboards -----
 

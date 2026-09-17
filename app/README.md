@@ -70,8 +70,15 @@ confirmada com `GET /api/auth/me` antes de qualquer tela aparecer — por isso o
 Se a API recusar o token durante o uso, o app derruba a sessão e volta ao login avisando que ela expirou.
 Sair pelo botão de logout apaga o token do aparelho.
 
+## O que cada perfil faz no app
+
+| Perfil | Telas |
+|---|---|
+| Operador | orientação vigente, lista das próprias ideias, detalhe, cadastro e edição (com escolha da orientação) e exclusão |
+| Gestor | painel com KPIs, fila de ideias com filtros por etapa, prioridade e área, análise da ideia (priorizar, avançar etapa, rejeitar com motivo), projetos (criar, editar, excluir, atualizar progresso e registrar resultados) |
+| Liderança | dashboard executivo, orientações estratégicas e andamento dos projetos |
+
 ## Pendências desta etapa
 
-- O botão **Rejeitar** envia um motivo padrão; a tela de justificativa entra na evolução da fila do gestor.
-- Ainda faltam as telas novas: CRUD de orientações (liderança), editar e excluir ideia (operador),
-  cadastro de projetos (gestor) e os gráficos do dashboard.
+- Liderança: CRUD de orientações, histórico de alterações e gráficos no dashboard.
+- Datas nos formulários de projeto são digitadas no formato `2026-12-31`; falta um seletor de data.

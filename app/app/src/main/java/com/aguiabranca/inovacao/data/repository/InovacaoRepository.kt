@@ -2,6 +2,7 @@ package com.aguiabranca.inovacao.data.repository
 
 import com.aguiabranca.inovacao.data.model.DashboardMetricas
 import com.aguiabranca.inovacao.data.model.Idea
+import com.aguiabranca.inovacao.data.model.IdeaPriority
 import com.aguiabranca.inovacao.data.model.IdeaStatus
 import com.aguiabranca.inovacao.data.model.Orientacao
 import com.aguiabranca.inovacao.data.model.Projeto
@@ -12,7 +13,11 @@ import com.aguiabranca.inovacao.data.remote.LoginRequestDto
 import com.aguiabranca.inovacao.data.remote.NovaIdeiaDto
 import com.aguiabranca.inovacao.data.remote.OrientacaoDto
 import com.aguiabranca.inovacao.data.remote.PainelGestorDto
+import com.aguiabranca.inovacao.data.remote.PrioridadeRequestDto
+import com.aguiabranca.inovacao.data.remote.ProgressoRequestDto
 import com.aguiabranca.inovacao.data.remote.ProjetoDto
+import com.aguiabranca.inovacao.data.remote.ProjetoRequestDto
+import com.aguiabranca.inovacao.data.remote.ResultadosRequestDto
 import com.aguiabranca.inovacao.data.remote.StatusIdeiaDto
 import com.aguiabranca.inovacao.data.remote.UsuarioDto
 import com.aguiabranca.inovacao.data.session.Sessao
@@ -107,9 +112,59 @@ object InovacaoRepository {
         api.alterarStatusIdeia(id, StatusIdeiaDto(IdeaStatus.REJEITADA.name, motivo)).paraIdeia()
     }
 
+    suspend fun priorizarIdeia(id: String, prioridade: IdeaPriority): Result<Idea> = chamar {
+        api.priorizarIdeia(id, PrioridadeRequestDto(prioridade.name)).paraIdeia()
+    }
+
     suspend fun projetos(): Result<List<Projeto>> = chamar {
         api.projetos().map { it.paraProjeto() }
     }
+
+    suspend fun salvarProjeto(
+        id: String?,
+        nome: String,
+        descricao: String,
+        orientacaoId: String,
+        ideiaOrigemId: String?,
+        totalEtapas: Int,
+        dataInicio: String,
+        prazo: String,
+        investimento: Double
+    ): Result<Projeto> = chamar {
+        val corpo = ProjetoRequestDto(
+            nome = nome,
+            descricao = descricao,
+            orientacaoId = orientacaoId,
+            ideiaOrigemId = ideiaOrigemId?.takeIf { it.isNotBlank() },
+            totalEtapas = totalEtapas,
+            dataInicio = dataInicio,
+            prazo = prazo,
+            investimento = investimento
+        )
+        val resposta = if (id == null) api.criarProjeto(corpo) else api.atualizarProjeto(id, corpo)
+        resposta.paraProjeto()
+    }
+
+    suspend fun registrarProgresso(
+        id: String,
+        etapa: Int,
+        progresso: Int,
+        status: String?,
+        observacao: String?
+    ): Result<Projeto> = chamar {
+        api.registrarProgresso(id, ProgressoRequestDto(etapa, progresso, status, observacao)).paraProjeto()
+    }
+
+    suspend fun registrarResultados(
+        id: String,
+        retorno: Double,
+        custoEvitado: Double?,
+        produtividade: Double?
+    ): Result<Projeto> = chamar {
+        api.registrarResultados(id, ResultadosRequestDto(retorno, custoEvitado, produtividade)).paraProjeto()
+    }
+
+    suspend fun excluirProjeto(id: String): Result<Unit> = chamar { api.excluirProjeto(id) }
 
     suspend fun painelGestor(): Result<PainelGestorDto> = chamar { api.painelGestor() }
 
@@ -160,6 +215,7 @@ object InovacaoRepository {
         nomeOperador = nomeOperador.orEmpty(),
         criadoEm = Formatadores.tempoRelativo(criadoEm),
         impacto = impacto.orEmpty(),
+        area = area.orEmpty(),
         orientacaoId = orientacaoId.orEmpty(),
         comentarioAvaliacao = comentarioAvaliacao.orEmpty()
     )
@@ -173,7 +229,17 @@ object InovacaoRepository {
         status = Formatadores.statusProjeto(status),
         prazo = Formatadores.dataCurta(prazo),
         investimento = Formatadores.moeda(investimento),
-        progresso = progresso
+        progresso = progresso,
+        descricao = descricao.orEmpty(),
+        orientacaoId = orientacaoId.orEmpty(),
+        ideiaOrigemId = ideiaOrigemId.orEmpty(),
+        statusApi = status,
+        dataInicioIso = dataInicio.orEmpty(),
+        prazoIso = prazo.orEmpty(),
+        investimentoValor = investimento ?: 0.0,
+        retornoValor = retornoFinanceiro,
+        custoEvitadoValor = custoEvitado,
+        produtividadeValor = aumentoProdutividade
     )
 
     /** Converte falhas de rede e respostas de erro da API em mensagens legíveis. */

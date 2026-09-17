@@ -46,6 +46,7 @@ data class Idea(
     val nomeOperador: String = "",
     val criadoEm: String = "",
     val impacto: String = "Médio",
+    val area: String = "",
     val orientacaoId: String = "",
     val comentarioAvaliacao: String = ""
 )
@@ -59,7 +60,18 @@ data class Projeto(
     val status: String = "No prazo",
     val prazo: String = "",
     val investimento: String = "",
-    val progresso: Int = 0
+    val progresso: Int = 0,
+    // Campos crus da API, usados nos formulários de edição.
+    val descricao: String = "",
+    val orientacaoId: String = "",
+    val ideiaOrigemId: String = "",
+    val statusApi: String = "NO_PRAZO",
+    val dataInicioIso: String = "",
+    val prazoIso: String = "",
+    val investimentoValor: Double = 0.0,
+    val retornoValor: Double? = null,
+    val custoEvitadoValor: Double? = null,
+    val produtividadeValor: Double? = null
 )
 
 data class DashboardMetricas(

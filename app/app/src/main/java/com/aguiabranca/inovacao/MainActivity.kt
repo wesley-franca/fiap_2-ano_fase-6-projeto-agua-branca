@@ -24,11 +24,16 @@ import com.aguiabranca.inovacao.ui.screens.auth.LoginScreen
 import com.aguiabranca.inovacao.ui.screens.operador.DetalheIdeiaScreen
 import com.aguiabranca.inovacao.ui.screens.operador.FormularioIdeiaScreen
 import com.aguiabranca.inovacao.ui.screens.operador.OperadorHomeScreen
-import com.aguiabranca.inovacao.ui.screens.gestor.GestorPainelScreen
+import com.aguiabranca.inovacao.ui.screens.gestor.DetalheIdeiaGestorScreen
+import com.aguiabranca.inovacao.ui.screens.gestor.DetalheProjetoScreen
 import com.aguiabranca.inovacao.ui.screens.gestor.FilaIdeiasScreen
+import com.aguiabranca.inovacao.ui.screens.gestor.FormularioProjetoScreen
+import com.aguiabranca.inovacao.ui.screens.gestor.GestorPainelScreen
+import com.aguiabranca.inovacao.ui.screens.gestor.ProjetosGestorScreen
 import com.aguiabranca.inovacao.ui.screens.lideranca.LiderancaDashboardScreen
 import com.aguiabranca.inovacao.ui.theme.AppTheme
 import com.aguiabranca.inovacao.ui.viewmodel.AuthViewModel
+import com.aguiabranca.inovacao.ui.viewmodel.GestorViewModel
 import com.aguiabranca.inovacao.ui.viewmodel.OperadorViewModel
 
 class MainActivity : ComponentActivity() {
@@ -54,6 +59,7 @@ fun AppNavigation() {
     val authUiState by authViewModel.uiState.collectAsState()
     val sessaoExpirada by Sessao.expirada.collectAsState()
     val operadorViewModel: OperadorViewModel = viewModel()
+    val gestorViewModel: GestorViewModel = viewModel()
 
     // A API recusou o token durante o uso: derruba a sessão e volta ao login.
     LaunchedEffect(sessaoExpirada) {
@@ -145,7 +151,9 @@ fun AppNavigation() {
         // Gestor
         composable("gestor_painel") {
             GestorPainelScreen(
+                viewModel = gestorViewModel,
                 onNavigateToFilaIdeias = { navController.navigate("fila_ideias") },
+                onNavigateToProjetos = { navController.navigate("projetos") },
                 onLogout = {
                     authViewModel.logout()
                     navController.navigate("login") { popUpTo("gestor_painel") { inclusive = true } }
@@ -155,7 +163,50 @@ fun AppNavigation() {
 
         composable("fila_ideias") {
             FilaIdeiasScreen(
+                viewModel = gestorViewModel,
+                onAbrirIdeia = { id -> navController.navigate("analisar_ideia/$id") },
                 onBackPress = { navController.popBackStack() }
+            )
+        }
+
+        composable("analisar_ideia/{id}") { entrada ->
+            DetalheIdeiaGestorScreen(
+                ideiaId = entrada.arguments?.getString("id").orEmpty(),
+                viewModel = gestorViewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("projetos") {
+            ProjetosGestorScreen(
+                viewModel = gestorViewModel,
+                onNovoProjeto = { navController.navigate("novo_projeto") },
+                onAbrirProjeto = { id -> navController.navigate("detalhe_projeto/$id") },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("novo_projeto") {
+            FormularioProjetoScreen(
+                viewModel = gestorViewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("detalhe_projeto/{id}") { entrada ->
+            DetalheProjetoScreen(
+                projetoId = entrada.arguments?.getString("id").orEmpty(),
+                viewModel = gestorViewModel,
+                onEditar = { id -> navController.navigate("editar_projeto/$id") },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("editar_projeto/{id}") { entrada ->
+            FormularioProjetoScreen(
+                viewModel = gestorViewModel,
+                projetoId = entrada.arguments?.getString("id"),
+                onBack = { navController.popBackStack() }
             )
         }
 
