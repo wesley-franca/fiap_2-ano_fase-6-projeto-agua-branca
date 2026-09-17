@@ -81,6 +81,24 @@ No Swagger, clique em **Authorize** e cole o token. Erros seguem o formato:
 | POST | `/api/orientacoes` | LIDERANCA |
 | PUT | `/api/orientacoes/{id}` | LIDERANCA |
 | DELETE | `/api/orientacoes/{id}` | LIDERANCA |
+| GET | `/api/ideias?status=&prioridade=&area=&orientacaoId=` | todos (operador vê só as próprias) |
+| GET | `/api/ideias/{id}` | autor, GESTOR, LIDERANCA |
+| POST | `/api/ideias` | OPERADOR |
+| PUT | `/api/ideias/{id}` | OPERADOR (autor, status `ENVIADA`) |
+| DELETE | `/api/ideias/{id}` | OPERADOR (autor, status `ENVIADA`) |
+| PATCH | `/api/ideias/{id}/prioridade` | GESTOR |
+| PATCH | `/api/ideias/{id}/status` | GESTOR |
+
+**Ideias.** Toda ideia nasce como `ENVIADA`, com prioridade `MEDIA`, autoria vinda do token e vínculo
+obrigatório a uma orientação ativa. O operador edita e exclui apenas as próprias e somente enquanto
+ninguém tiver mexido nelas. O gestor prioriza e conduz o fluxo:
+
+```
+ENVIADA → TRIAGEM → ANALISE → DECISAO → PROJETO
+   └────────┴─────────┴──────────┴──────→ REJEITADA (exige comentário)
+```
+
+Transição fora desse fluxo retorna 409. `PROJETO` e `REJEITADA` são finais.
 
 A exclusão de orientação é lógica: ela some das consultas, mas o histórico e os vínculos com ideias e
 projetos são preservados. Cada criação, alteração e exclusão gera um registro no histórico (data, ação,

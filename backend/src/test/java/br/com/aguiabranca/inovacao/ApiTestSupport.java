@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public abstract class ApiTestSupport {
 
     protected static final String OPERADOR = "operador@aguiabranca.com";
+    protected static final String OPERADORA_ANA = "ana.lima@aguiabranca.com";
     protected static final String GESTOR = "gestor@aguiabranca.com";
     protected static final String LIDERANCA = "lideranca@aguiabranca.com";
 

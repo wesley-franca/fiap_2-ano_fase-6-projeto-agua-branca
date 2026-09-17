@@ -168,7 +168,9 @@ backend/
 - [x] B2 Auth: login com BCrypt (tempo constante p/ e-mail inexistente), JWT HS256 com expiração e claim `role`, validação via OAuth2 Resource Server, 401/403 em JSON padronizado, `/auth/me`, `@EnableMethodSecurity`
 - [x] B3 Seed idempotente: 5 usuários (3 contas da v1 + 2 operadores), 3 orientações, 5 ideias, 11 projetos que reproduzem os KPIs da v1; índices `@Indexed` criados na inicialização
 - [x] B4 Orientações: CRUD (escrita só para LIDERANCA), exclusão lógica, histórico automático (criação/atualização/exclusão), filtros `vigente` e `area`
-- [ ] B5 Ideias: CRUD do operador (dono), filtros, prioridade, fluxo de status, vínculo orientação
+- [x] B5 Ideias: CRUD do operador (só o autor e só enquanto `ENVIADA`), vínculo obrigatório com orientação ativa,
+  filtros (status/prioridade/área/orientação), priorização e fluxo de status pelo gestor
+  (`ENVIADA → TRIAGEM/ANALISE → DECISAO → PROJETO`, rejeição com motivo obrigatório; transição inválida = 409)
 - [ ] B6 Projetos: CRUD, progresso, resultados, atualizações, vínculo orientação/ideia
 - [ ] B7 Dashboard: agregações gestor, resumo liderança, por orientação, por projeto
 - **Convenção de DTOs:** campos booleanos/numéricos opcionais usam wrapper (`Boolean`, `Integer`), nunca primitivo —
