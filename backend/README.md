@@ -88,6 +88,13 @@ No Swagger, clique em **Authorize** e cole o token. Erros seguem o formato:
 | DELETE | `/api/ideias/{id}` | OPERADOR (autor, status `ENVIADA`) |
 | PATCH | `/api/ideias/{id}/prioridade` | GESTOR |
 | PATCH | `/api/ideias/{id}/status` | GESTOR |
+| GET | `/api/projetos?status=&orientacaoId=` | GESTOR, LIDERANCA |
+| GET | `/api/projetos/{id}` | GESTOR, LIDERANCA |
+| POST | `/api/projetos` | GESTOR |
+| PUT | `/api/projetos/{id}` | GESTOR |
+| PATCH | `/api/projetos/{id}/progresso` | GESTOR |
+| PATCH | `/api/projetos/{id}/resultados` | GESTOR |
+| DELETE | `/api/projetos/{id}` | GESTOR |
 
 **Ideias.** Toda ideia nasce como `ENVIADA`, com prioridade `MEDIA`, autoria vinda do token e vínculo
 obrigatório a uma orientação ativa. O operador edita e exclui apenas as próprias e somente enquanto
@@ -99,6 +106,12 @@ ENVIADA → TRIAGEM → ANALISE → DECISAO → PROJETO
 ```
 
 Transição fora desse fluxo retorna 409. `PROJETO` e `REJEITADA` são finais.
+
+**Projetos.** O gestor cadastra e mantém; a liderança acompanha; o operador não tem acesso. Todo projeto é
+vinculado a uma orientação e pode nascer de uma ideia que esteja em `DECISAO` — nesse caso a ideia passa a
+`PROJETO` e não pode originar outro. Cada atualização de progresso (etapa, percentual, status e observação)
+entra no histórico do projeto, e os resultados (retorno financeiro, custo evitado e aumento de produtividade)
+alimentam os indicadores da liderança.
 
 A exclusão de orientação é lógica: ela some das consultas, mas o histórico e os vínculos com ideias e
 projetos são preservados. Cada criação, alteração e exclusão gera um registro no histórico (data, ação,

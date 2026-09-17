@@ -171,7 +171,9 @@ backend/
 - [x] B5 Ideias: CRUD do operador (só o autor e só enquanto `ENVIADA`), vínculo obrigatório com orientação ativa,
   filtros (status/prioridade/área/orientação), priorização e fluxo de status pelo gestor
   (`ENVIADA → TRIAGEM/ANALISE → DECISAO → PROJETO`, rejeição com motivo obrigatório; transição inválida = 409)
-- [ ] B6 Projetos: CRUD, progresso, resultados, atualizações, vínculo orientação/ideia
+- [x] B6 Projetos: CRUD do gestor (liderança só consulta, operador sem acesso), vínculo obrigatório com orientação,
+  origem opcional em ideia que esteja em `DECISAO` (marca a ideia como `PROJETO`, uma ideia por projeto),
+  progresso com histórico de atualizações e registro de resultados (retorno, custo evitado, produtividade)
 - [ ] B7 Dashboard: agregações gestor, resumo liderança, por orientação, por projeto
 - **Convenção de DTOs:** campos booleanos/numéricos opcionais usam wrapper (`Boolean`, `Integer`), nunca primitivo —
   no Jackson 3 um primitivo ausente ou nulo faz a requisição falhar com 400 antes da validação.
