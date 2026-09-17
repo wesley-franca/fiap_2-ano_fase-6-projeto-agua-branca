@@ -232,9 +232,11 @@ backend/
   além das decisões técnicas e seus porquês
 - [x] D4 `docs/ENDPOINTS.md`: 27 endpoints com método, parâmetros, corpo e respostas, gerado a partir do OpenAPI,
   com a tabela de códigos de erro comuns
-- [ ] D5 Apresentação PDF/PPT: nomes e RMs, diagrama, endpoints, prints do app, v1 → v2
+- [~] D5 Roteiro completo em `docs/APRESENTACAO.md` (11 slides com conteúdo pronto).
+  **Falta** preencher nomes e RMs, inserir os prints e exportar em PDF/PPT
 - [ ] D6 Vídeo de demonstração dos 3 perfis (recomendado, a v1 teve)
-- [ ] D7 Empacotar: `backend.zip` (sem `target/`), `app.zip` (sem `build/`, com APK), apresentação
+- [x] D7 `./empacotar-entrega.sh` gera `entrega/` com backend.zip, app.zip (com o APK dentro e solto) e
+  documentacao.zip — testado: nenhum arquivo de build entrou nos pacotes
 - [ ] D8 Checklist final: backend sobe com `docker compose up`, APK instala e loga com os 3 perfis, nenhum mock restante
 
 ## 10. Cronograma (hoje 14/09 → entrega 21/09)

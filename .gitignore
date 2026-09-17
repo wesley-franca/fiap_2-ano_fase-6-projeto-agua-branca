@@ -29,3 +29,6 @@ local.properties
 captures/
 *.keystore
 *.jks
+
+# Saída do empacotamento da entrega
+entrega/
