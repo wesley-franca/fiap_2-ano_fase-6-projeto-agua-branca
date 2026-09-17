@@ -81,6 +81,11 @@ Sair pelo botão de logout apaga o token do aparelho.
 Os gráficos são desenhados em Canvas, sem biblioteca externa: lucro por orientação (barras),
 projetos por situação e ideias por etapa (distribuição com legenda).
 
+## Navegação
+
+Cada perfil tem seu próprio grafo de navegação. O estado das telas é compartilhado dentro do perfil e criado
+somente ao entrar nele — um operador não dispara as consultas de gestor e liderança, que a API recusaria.
+
 ## Pendências desta etapa
 
 - Datas nos formulários são digitadas no formato `2026-12-31`; falta um seletor de data.

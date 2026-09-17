@@ -213,7 +213,9 @@ backend/
   - [x] A13 CRUD de orientações pela liderança (criar, editar, excluir com confirmação) + tela de histórico de alterações
   - [x] A14 Andamento com retorno financeiro no card e tela de retorno do projeto (investimento, retorno, lucro,
     ROI, custo evitado e produtividade), além do consolidado por orientação no dashboard
-- [ ] A15 Navegação: novas rotas, bottom bar/abas por perfil, guarda de rota por role
+- [x] A15 Navegação: um grafo por perfil (operador, gestor, liderança). O ViewModel é criado ao entrar no grafo e
+  compartilhado entre as telas daquele perfil, então entrar como operador não dispara as chamadas dos outros perfis
+  (que voltariam 403). Trocar de usuário leva para a home do novo perfil
 - [ ] A16 Gerar APK (debug/release) com URL configurável; testar no emulador e em aparelho físico na mesma rede
 
 ## 9. Documentação e entrega
