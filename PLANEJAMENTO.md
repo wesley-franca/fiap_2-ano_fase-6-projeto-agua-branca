@@ -198,8 +198,9 @@ backend/
   401 durante o uso derruba a sessão e volta ao login com aviso; SSO e credenciais de teste removidos da tela
 - [x] A6 Estados de UI: carregando, erro com "Tentar de novo" e lista vazia nas telas dos três perfis — pull-to-refresh fica para o A15
 - [ ] **Operador**
-  - [ ] A7 Minhas ideias (só as próprias) + detalhe
-  - [ ] A8 Nova/editar ideia com categoria (select) e **orientação vinculada**; excluir
+  - [x] A7 Minhas ideias (só as próprias, vindas da API) + tela de detalhe com status, prioridade e retorno do gestor
+  - [x] A8 Formulário único de cadastro e edição com seletor de orientação estratégica; exclusão com confirmação.
+    Edição e exclusão só aparecem enquanto a ideia está `ENVIADA`, como a API exige
 - [ ] **Gestor**
   - [ ] A9 Painel com KPIs reais
   - [ ] A10 Fila com filtros funcionais (status/área/prioridade), detalhe, **priorizar**, aprovar/rejeitar com comentário

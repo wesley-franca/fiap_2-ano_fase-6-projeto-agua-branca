@@ -74,6 +74,21 @@ object InovacaoRepository {
         api.criarIdeia(NovaIdeiaDto(titulo, categoria, problema, proposta, orientacaoId)).paraIdeia()
     }
 
+    suspend fun buscarIdeia(id: String): Result<Idea> = chamar { api.ideia(id).paraIdeia() }
+
+    suspend fun atualizarIdeia(
+        id: String,
+        titulo: String,
+        categoria: String,
+        problema: String,
+        proposta: String,
+        orientacaoId: String
+    ): Result<Idea> = chamar {
+        api.atualizarIdeia(id, NovaIdeiaDto(titulo, categoria, problema, proposta, orientacaoId)).paraIdeia()
+    }
+
+    suspend fun excluirIdeia(id: String): Result<Unit> = chamar { api.excluirIdeia(id) }
+
     /**
      * Avança a ideia uma etapa no fluxo da API (ENVIADA → ANALISE → DECISAO → PROJETO).
      * O botão "Aprovar" da fila do gestor usa este caminho.
@@ -144,7 +159,9 @@ object InovacaoRepository {
         prioridade = prioridade,
         nomeOperador = nomeOperador.orEmpty(),
         criadoEm = Formatadores.tempoRelativo(criadoEm),
-        impacto = impacto.orEmpty()
+        impacto = impacto.orEmpty(),
+        orientacaoId = orientacaoId.orEmpty(),
+        comentarioAvaliacao = comentarioAvaliacao.orEmpty()
     )
 
     private fun ProjetoDto.paraProjeto() = Projeto(

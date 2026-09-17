@@ -21,13 +21,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.aguiabranca.inovacao.data.model.UserRole
 import com.aguiabranca.inovacao.ui.screens.auth.LoginScreen
+import com.aguiabranca.inovacao.ui.screens.operador.DetalheIdeiaScreen
+import com.aguiabranca.inovacao.ui.screens.operador.FormularioIdeiaScreen
 import com.aguiabranca.inovacao.ui.screens.operador.OperadorHomeScreen
-import com.aguiabranca.inovacao.ui.screens.operador.NovaIdeiaScreen
 import com.aguiabranca.inovacao.ui.screens.gestor.GestorPainelScreen
 import com.aguiabranca.inovacao.ui.screens.gestor.FilaIdeiasScreen
 import com.aguiabranca.inovacao.ui.screens.lideranca.LiderancaDashboardScreen
 import com.aguiabranca.inovacao.ui.theme.AppTheme
 import com.aguiabranca.inovacao.ui.viewmodel.AuthViewModel
+import com.aguiabranca.inovacao.ui.viewmodel.OperadorViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +53,7 @@ fun AppNavigation() {
     val authViewModel: AuthViewModel = viewModel()
     val authUiState by authViewModel.uiState.collectAsState()
     val sessaoExpirada by Sessao.expirada.collectAsState()
+    val operadorViewModel: OperadorViewModel = viewModel()
 
     // A API recusou o token durante o uso: derruba a sessão e volta ao login.
     LaunchedEffect(sessaoExpirada) {
@@ -102,10 +105,12 @@ fun AppNavigation() {
             )
         }
 
-        // Operador
+        // Operador — as telas compartilham o mesmo ViewModel para não recarregar a cada navegação.
         composable("operador_home") {
             OperadorHomeScreen(
+                viewModel = operadorViewModel,
                 onNavigateToNewIdeia = { navController.navigate("nova_ideia") },
+                onAbrirIdeia = { id -> navController.navigate("detalhe_ideia/$id") },
                 onLogout = {
                     authViewModel.logout()
                     navController.navigate("login") { popUpTo("operador_home") { inclusive = true } }
@@ -114,7 +119,25 @@ fun AppNavigation() {
         }
 
         composable("nova_ideia") {
-            NovaIdeiaScreen(
+            FormularioIdeiaScreen(
+                viewModel = operadorViewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("detalhe_ideia/{id}") { entrada ->
+            DetalheIdeiaScreen(
+                ideiaId = entrada.arguments?.getString("id").orEmpty(),
+                viewModel = operadorViewModel,
+                onEditar = { id -> navController.navigate("editar_ideia/$id") },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("editar_ideia/{id}") { entrada ->
+            FormularioIdeiaScreen(
+                viewModel = operadorViewModel,
+                ideiaId = entrada.arguments?.getString("id"),
                 onBack = { navController.popBackStack() }
             )
         }

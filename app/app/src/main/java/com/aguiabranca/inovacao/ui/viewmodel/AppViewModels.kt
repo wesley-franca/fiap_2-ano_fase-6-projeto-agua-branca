@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aguiabranca.inovacao.data.model.DashboardMetricas
 import com.aguiabranca.inovacao.data.model.Idea
+import com.aguiabranca.inovacao.data.model.IdeaStatus
 import com.aguiabranca.inovacao.data.model.Orientacao
 import com.aguiabranca.inovacao.data.model.Projeto
 import com.aguiabranca.inovacao.data.repository.InovacaoRepository
@@ -17,7 +18,9 @@ data class OperadorUiState(
     val minhasIdeias: List<Idea> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val ultimaOrientacao: Orientacao? = null
+    val ultimaOrientacao: Orientacao? = null,
+    /** Vira `true` quando um envio, edição ou exclusão termina, para a tela poder voltar. */
+    val operacaoConcluida: Boolean = false
 )
 
 class OperadorViewModel : ViewModel() {
@@ -44,20 +47,43 @@ class OperadorViewModel : ViewModel() {
         }
     }
 
-    /** A ideia é vinculada à orientação vigente em destaque na home. */
-    fun adicionarIdeia(titulo: String, categoria: String, problema: String, proposta: String) {
-        val orientacaoId = _uiState.value.ultimaOrientacao?.id
-        if (orientacaoId == null) {
-            _uiState.value = _uiState.value.copy(
-                errorMessage = "Nenhuma orientação estratégica disponível para vincular a ideia"
-            )
-            return
-        }
+    fun ideia(id: String): Idea? = _uiState.value.minhasIdeias.firstOrNull { it.id == id }
 
-        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+    fun adicionarIdeia(
+        titulo: String,
+        categoria: String,
+        problema: String,
+        proposta: String,
+        orientacaoId: String
+    ) = executar {
+        InovacaoRepository.criarIdeia(titulo, categoria, problema, proposta, orientacaoId)
+    }
+
+    fun atualizarIdeia(
+        id: String,
+        titulo: String,
+        categoria: String,
+        problema: String,
+        proposta: String,
+        orientacaoId: String
+    ) = executar {
+        InovacaoRepository.atualizarIdeia(id, titulo, categoria, problema, proposta, orientacaoId)
+    }
+
+    fun excluirIdeia(id: String) = executar { InovacaoRepository.excluirIdeia(id) }
+
+    fun operacaoTratada() {
+        _uiState.value = _uiState.value.copy(operacaoConcluida = false)
+    }
+
+    private fun executar(acao: suspend () -> Result<*>) {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null, operacaoConcluida = false)
         viewModelScope.launch {
-            InovacaoRepository.criarIdeia(titulo, categoria, problema, proposta, orientacaoId)
-                .onSuccess { carregar() }
+            acao()
+                .onSuccess {
+                    carregar()
+                    _uiState.value = _uiState.value.copy(operacaoConcluida = true)
+                }
                 .onFailure { erro ->
                     _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = erro.message)
                 }
@@ -158,6 +184,9 @@ class LiderancaViewModel : ViewModel() {
         }
     }
 }
+
+/** Uma ideia só pode ser alterada pelo autor enquanto ninguém a avaliou. */
+fun Idea.podeSerEditada(): Boolean = status == IdeaStatus.ENVIADA
 
 private fun primeiroErro(resultados: List<Result<*>>): String? =
     resultados.firstOrNull { it.isFailure }?.exceptionOrNull()?.message

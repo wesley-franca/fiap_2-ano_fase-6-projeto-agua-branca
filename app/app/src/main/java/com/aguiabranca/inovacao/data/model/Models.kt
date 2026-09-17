@@ -45,7 +45,9 @@ data class Idea(
     val prioridade: IdeaPriority = IdeaPriority.MEDIA,
     val nomeOperador: String = "",
     val criadoEm: String = "",
-    val impacto: String = "Médio"
+    val impacto: String = "Médio",
+    val orientacaoId: String = "",
+    val comentarioAvaliacao: String = ""
 )
 
 data class Projeto(
