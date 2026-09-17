@@ -189,8 +189,10 @@ backend/
 ## 8. App — tarefas de integração
 
 - [x] A1 Importar código v1 para `app/` (sem lixo) — commit baseline + wrapper Gradle recriado (o jar da v1 estava vazio e faltava `gradlew`); `./gradlew assembleDebug` OK
-- [ ] A2 Dependências: Retrofit, OkHttp (logging), kotlinx-serialization ou Gson, DataStore; `BuildConfig.API_BASE_URL` (padrão `http://10.0.2.2:8080/api` no emulador; sobrescrevível via `gradle.properties` para IP da máquina/URL futura); `networkSecurityConfig` para HTTP local
-- [ ] A3 Camada de dados: `ApiService`, DTOs, `AuthInterceptor` (Bearer), tratamento de 401 → logout, `Repository` interfaces + implementações; **remover `MockRepository`**
+- [x] A2 Retrofit + OkHttp (logging) + Gson, desugaring para `java.time`; `BuildConfig.API_BASE_URL` (padrão `http://10.0.2.2:8080/`,
+  sobrescrevível com `-PapiBaseUrl=`), `networkSecurityConfig` liberando HTTP local — DataStore fica para o A5
+- [x] A3 Camada de dados: `ApiService` (Retrofit), DTOs, interceptor com Bearer, erros da API traduzidos para mensagem legível,
+  `InovacaoRepository` único e **`MockRepository` removido**; ViewModels com carregamento e erro
 - [ ] A4 Modelos: valores numéricos/datas, formatação (moeda BRL, datas relativas) na UI; enums alinhados à API
 - [ ] A5 Login real: token persistido, restaurar sessão com `/auth/me`, remover SSO e credenciais de teste (ou manter só em debug)
 - [ ] A6 Estados de UI: loading, erro com retry, vazio, pull-to-refresh

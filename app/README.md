@@ -1,251 +1,70 @@
-# 🚀 App de Inovação - Projeto Completo e Funcional
+# App de Inovação — Águia Branca (Android)
 
-Este é um **projeto Android totalmente funcional**, pronto para abrir e rodar no emulador!
+Kotlin · Jetpack Compose · Material 3 · MVVM · Retrofit.
 
-## ✨ O que tem incluído
+Este é o app da Sprint 1 **integrado ao backend real**: não há mais dados em memória, todas as telas
+consomem a API REST do diretório [`../backend`](../backend).
 
-✅ **Login com 3 perfis** (Operador, Gestor, Liderança)
-✅ **Tela de Operador** - Home + Cadastro de Ideias
-✅ **Tela de Gestor** - Painel + Fila de Ideias + Aprovação
-✅ **Tela de Liderança** - Dashboard executivo com KPIs
-✅ **Navegação completa** entre as telas
-✅ **Dados de exemplo** em memória (sem precisar de Firebase)
-✅ **Material 3** moderno implementado
-✅ **Sem bugs** - Testado e funcional
+## Antes de rodar: suba a API
 
----
-
-## 🚀 Como Usar (3 passos)
-
-### 1️⃣ Abrir o projeto no Android Studio
-
-```
-File → Open → Selecione a pasta "ProjetoFinal"
+```bash
+cd ../backend
+docker compose up --build
 ```
 
-### 2️⃣ Sincronizar Gradle
+## Rodar no Android Studio
 
-Aguarde o Android Studio sincronizar (leva 2-3 minutos na primeira vez)
+1. `File → Open` e selecione a pasta `app/` deste repositório.
+2. Aguarde a sincronização do Gradle.
+3. `Run → Run 'app'` em um emulador.
 
-### 3️⃣ Rodar o app
+No emulador, o endereço `10.0.2.2` aponta para o computador onde a API está rodando, que é o padrão do projeto.
 
-```
-Run → Run 'app'  (ou Shift + F10)
-```
+## Rodar em um aparelho físico
 
-Selecione o emulador e aguarde compilar.
+O celular precisa alcançar a API pela rede local. Descubra o IP da sua máquina (`hostname -I` no Linux) e
+gere o APK apontando para ele:
 
----
-
-## 🔐 Credenciais de Teste
-
-Use qualquer uma das contas abaixo para testar os diferentes perfis:
-
-```
-Email: operador@aguiabranca.com
-Senha: senha123
-→ Acessa: Home do Operador + Cadastro de Ideias
-
-Email: gestor@aguiabranca.com
-Senha: senha123
-→ Acessa: Painel do Gestor + Fila de Ideias
-
-Email: lideranca@aguiabranca.com
-Senha: senha123
-→ Acessa: Dashboard Executivo
+```bash
+./gradlew assembleDebug -PapiBaseUrl=http://192.168.0.10:8080/
 ```
 
----
+O APK fica em `app/build/outputs/apk/debug/app-debug.apk`.
 
-## 🎯 Funcionalidades Implementadas
+## Usuários de teste
 
-### Operador
-- ✅ Home com orientações estratégicas
-- ✅ Lista de minhas ideias
-- ✅ Formulário para cadastrar nova ideia
-- ✅ Status das ideias (Enviada, Em análise, Aprovada, etc)
+Senha de todos: `senha123`.
 
-### Gestor
-- ✅ Painel com KPIs (Ideias novas, Em análise, Projetos ativos)
-- ✅ Fila de ideias para revisar
-- ✅ Botões para aprovar/rejeitar ideias
-- ✅ Lista de meus projetos
+| E-mail | Perfil | O que vê |
+|---|---|---|
+| `operador@aguiabranca.com` | Operador | orientação vigente e as próprias ideias |
+| `gestor@aguiabranca.com` | Gestor | painel, fila de ideias e projetos |
+| `lideranca@aguiabranca.com` | Liderança | dashboard executivo, orientações e andamento |
 
-### Liderança
-- ✅ Dashboard com 6 KPIs principais
-- ✅ ROI, Lucro YTD, Projetos Ativos, % No Prazo, Custo Evitado, Produtividade
-- ✅ Lista de orientações estratégicas
-- ✅ Andamento de todos os projetos
-
----
-
-## 📂 Estrutura do Projeto
+## Estrutura
 
 ```
-ProjetoFinal/
-├── app/src/main/
-│   ├── java/com/aguiabranca/inovacao/
-│   │   ├── MainActivity.kt ⭐ (Navegação)
-│   │   ├── data/
-│   │   │   ├── model/Models.kt
-│   │   │   └── repository/MockRepository.kt (Dados em memória)
-│   │   └── ui/
-│   │       ├── screens/
-│   │       │   ├── auth/AuthScreens.kt (Login)
-│   │       │   ├── operador/OperadorScreens.kt
-│   │       │   ├── gestor/GestorScreens.kt
-│   │       │   └── lideranca/LiderancaScreens.kt
-│   │       ├── theme/
-│   │       │   ├── Theme.kt (Material 3)
-│   │       │   └── Type.kt (Tipografia)
-│   │       └── viewmodel/
-│   │           ├── AuthViewModel.kt
-│   │           └── AppViewModels.kt
-│   └── res/
-│       └── values/
-│           ├── colors.xml
-│           ├── strings.xml
-│           └── themes.xml
-├── build.gradle.kts (Project)
-└── settings.gradle.kts
-
-Tudo pronto para rodar! ✅
+app/src/main/java/com/aguiabranca/inovacao/
+├── MainActivity.kt          navegação (NavHost) por perfil
+├── data/
+│   ├── model/               modelos usados pelas telas
+│   ├── remote/              ApiService (Retrofit), DTOs e cliente HTTP com o token
+│   ├── repository/          InovacaoRepository — única fonte de dados
+│   └── session/             token e usuário da sessão atual
+├── ui/screens/              login, operador, gestor e liderança
+├── ui/viewmodel/            estado das telas (carregando, erro, dados)
+└── util/Formatadores.kt     moeda, datas e percentuais exibidos nas telas
 ```
 
----
+## Integração com a API
 
-## 🧪 Testando o App
+- O login chama `POST /api/auth/login`; o token JWT volta e é enviado em todas as chamadas seguintes.
+- Cada perfil só enxerga o que a API permite: o operador recebe apenas as próprias ideias, e o
+  dashboard executivo é recusado para quem não é da liderança.
+- Erros da API viram mensagem legível na tela (sessão expirada, sem permissão, servidor fora do ar).
 
-### Fluxo Operador
-1. Login com `operador@aguiabranca.com`
-2. Vê Home com orientações estratégicas
-3. Clica no botão **+** para criar nova ideia
-4. Preenche o formulário e envia
-5. Ideia aparece na lista
-6. Clica no ícone de saída para logout
+## Pendências desta etapa
 
-### Fluxo Gestor
-1. Login com `gestor@aguiabranca.com`
-2. Vê Painel com KPIs
-3. Clica em "ver fila ›"
-4. Vê lista de ideias para revisar
-5. Clica **Aprovar** ou **Rejeitar**
-6. Status das ideias muda
-
-### Fluxo Liderança
-1. Login com `lideranca@aguiabranca.com`
-2. Dashboard mostra todos os KPIs
-3. Scroll down para ver orientações
-4. Scroll mais para ver andamento de projetos
-5. Cada card mostra etapa, status, investimento, prazo
-
----
-
-## ⚡ Tecnologias Usadas
-
-- **Kotlin** 1.9.10
-- **Jetpack Compose** 1.5.4 (UI moderna)
-- **Material 3** (Design system)
-- **Navigation Compose** (Navegação)
-- **StateFlow** (Gerenciamento de estado)
-- **MockRepository** (Dados em memória, sem Firebase)
-
----
-
-## 🐛 Solução de Problemas
-
-### "Gradle sync failed"
-→ File → Invalidate Caches → Restart Android Studio
-→ Build → Clean Project
-→ Build → Rebuild Project
-
-### "App crasha ao abrir"
-→ View → Tool Windows → Logcat
-→ Procure pela mensagem de erro vermelha
-→ Google a mensagem
-
-### "Emulador não funciona"
-→ Crie novo AVD com API 28 mínimo
-→ Aloque 4GB RAM
-→ Use aceleração de hardware (Intel HAXM)
-
-### "Build muito lento"
-→ Aumente RAM da JVM em Android Studio settings
-→ Configure paralelismo de build
-
----
-
-## 📦 Para Gerar APK
-
-Quando tiver tudo funcionando:
-
-1. **Build → Generate Signed APK**
-2. Selecione **app**
-3. Crie novo Keystore:
-   - Path: qualquer pasta
-   - Senha: senha123
-   - Alias: app
-4. Selecione **release**
-5. APK fica em `app/release/app-release.apk`
-
----
-
-## 🎓 Próximos Passos (Opcional)
-
-Se quiser expandir o projeto:
-
-1. **Conectar Firebase Real**
-   - Criar projeto no Firebase Console
-   - Adicionar google-services.json
-   - Substituir MockRepository por FirebaseRepository real
-
-2. **Adicionar mais funcionalidades**
-   - Upload de imagens para ideias
-   - Editar ideias cadastradas
-   - Histórico de mudanças de status
-   - Notificações push
-   - Filtros avançados
-
-3. **Melhorar UI**
-   - Customizar cores por tema
-   - Adicionar ícones diferenciados
-   - Criar animações de transição
-   - Responsivo para tablets
-
----
-
-## ✅ Checklist
-
-- [x] Projeto estruturado profissionalmente
-- [x] MVVM + Repository Pattern
-- [x] Material 3 implementado
-- [x] Todas as 3 telas de cada perfil
-- [x] Navegação fluida
-- [x] Dados de teste em memória
-- [x] Sem bugs de compilação
-- [x] Pronto para rodar
-
-**Tudo pronto! Basta abrir e rodar!** 🎉
-
----
-
-## 📞 Resumo
-
-Este projeto tem **~2500 linhas de Kotlin**, totalmente funcional:
-- ✅ 10 telas implementadas
-- ✅ 3 ViewModels
-- ✅ 1 Repository mockado
-- ✅ Material 3 completo
-- ✅ Navegação com NavHost
-- ✅ StateFlow para estado
-
-**Você pode:**
-1. Abrir agora no Android Studio
-2. Rodar no emulador
-3. Testar todos os fluxos
-4. Entregar na faculdade
-5. Depois conectar Firebase se quiser
-
----
-
-**Boa sorte! 🚀**
+- O token ainda vive apenas em memória: fechar o app exige novo login (entra junto com a tela de login definitiva).
+- O botão **Rejeitar** envia um motivo padrão; a tela de justificativa entra na evolução da fila do gestor.
+- O botão **SSO** e o texto de credenciais de teste continuam na tela de login e serão removidos.

@@ -3,7 +3,7 @@ package com.aguiabranca.inovacao.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aguiabranca.inovacao.data.model.User
-import com.aguiabranca.inovacao.data.repository.MockRepository
+import com.aguiabranca.inovacao.data.repository.InovacaoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -30,36 +30,34 @@ class AuthViewModel : ViewModel() {
     }
 
     fun login() {
-        val currentState = _uiState.value
-        if (currentState.email.isEmpty() || currentState.password.isEmpty()) {
-            _uiState.value = currentState.copy(
-                errorMessage = "Preencha email e senha"
-            )
+        val estado = _uiState.value
+        if (estado.email.isBlank() || estado.password.isBlank()) {
+            _uiState.value = estado.copy(errorMessage = "Preencha e-mail e senha")
             return
         }
 
-        _uiState.value = currentState.copy(isLoading = true)
+        _uiState.value = estado.copy(isLoading = true, errorMessage = null)
 
         viewModelScope.launch {
-            val result = MockRepository.login(currentState.email, currentState.password)
-            result.onSuccess { user ->
-                _uiState.value = AuthUiState(
-                    isLoading = false,
-                    currentUser = user,
-                    email = currentState.email,
-                    isLoggedIn = true
-                )
-            }.onFailure { exception ->
-                _uiState.value = currentState.copy(
-                    isLoading = false,
-                    errorMessage = exception.message ?: "Erro ao fazer login"
-                )
-            }
+            InovacaoRepository.login(estado.email, estado.password)
+                .onSuccess { usuario ->
+                    _uiState.value = AuthUiState(
+                        currentUser = usuario,
+                        email = estado.email,
+                        isLoggedIn = true
+                    )
+                }
+                .onFailure { erro ->
+                    _uiState.value = estado.copy(
+                        isLoading = false,
+                        errorMessage = erro.message ?: "Não foi possível entrar"
+                    )
+                }
         }
     }
 
     fun logout() {
-        MockRepository.logout()
+        InovacaoRepository.logout()
         _uiState.value = AuthUiState()
     }
 }

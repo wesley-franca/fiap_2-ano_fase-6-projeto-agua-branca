@@ -15,7 +15,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.aguiabranca.inovacao.data.model.UserRole
-import com.aguiabranca.inovacao.data.repository.MockRepository
 import com.aguiabranca.inovacao.ui.screens.auth.LoginScreen
 import com.aguiabranca.inovacao.ui.screens.operador.OperadorHomeScreen
 import com.aguiabranca.inovacao.ui.screens.operador.NovaIdeiaScreen
