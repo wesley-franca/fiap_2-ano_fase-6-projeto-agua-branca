@@ -1,0 +1,745 @@
+{
+  "info": {
+    "name": "Águia Branca - Plataforma de Inovação",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Suba a API com `docker compose up` em backend/. Rode o Login primeiro: o token é salvo automaticamente e usado nas demais chamadas."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "email",
+      "value": "gestor@aguiabranca.com"
+    },
+    {
+      "key": "senha",
+      "value": "senha123"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Autenticação",
+      "item": [
+        {
+          "name": "Login (salva o token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"senha\": \"{{senha}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = pm.response.json();",
+                  "pm.collectionVariables.set('token', d.token);",
+                  "pm.test('login ok', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/auth/me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Orientações estratégicas",
+      "item": [
+        {
+          "name": "GET /api/orientacoes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orientacoes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orientacoes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/orientacoes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orientacoes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orientacoes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"texto\",\n  \"descricao\": \"texto\",\n  \"categoria\": \"texto\",\n  \"campanha\": \"texto\",\n  \"area\": \"texto\",\n  \"periodo\": \"texto\",\n  \"indicadores\": [\n    \"texto\"\n  ],\n  \"vigente\": \"true/false\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /api/orientacoes/{id}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orientacoes/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orientacoes",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/orientacoes/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orientacoes/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orientacoes",
+                "{{id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"texto\",\n  \"descricao\": \"texto\",\n  \"categoria\": \"texto\",\n  \"campanha\": \"texto\",\n  \"area\": \"texto\",\n  \"periodo\": \"texto\",\n  \"indicadores\": [\n    \"texto\"\n  ],\n  \"vigente\": \"true/false\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/orientacoes/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orientacoes/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orientacoes",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/orientacoes/{id}/historico",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orientacoes/{{id}}/historico",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orientacoes",
+                "{{id}}",
+                "historico"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Ideias de inovação",
+      "item": [
+        {
+          "name": "GET /api/ideias",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ideias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ideias"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/ideias",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ideias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ideias"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"texto\",\n  \"categoria\": \"texto\",\n  \"problemaObservado\": \"texto\",\n  \"suaProposta\": \"texto\",\n  \"impacto\": \"BAIXO | MEDIO | ALTO\",\n  \"orientacaoId\": \"texto\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /api/ideias/{id}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ideias/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ideias",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/ideias/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ideias/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ideias",
+                "{{id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"texto\",\n  \"categoria\": \"texto\",\n  \"problemaObservado\": \"texto\",\n  \"suaProposta\": \"texto\",\n  \"impacto\": \"BAIXO | MEDIO | ALTO\",\n  \"orientacaoId\": \"texto\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/ideias/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ideias/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ideias",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/ideias/{id}/prioridade",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ideias/{{id}}/prioridade",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ideias",
+                "{{id}}",
+                "prioridade"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prioridade\": \"BAIXA | MEDIA | ALTA\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/ideias/{id}/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ideias/{{id}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ideias",
+                "{{id}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ENVIADA | TRIAGEM | ANALISE | DECISAO | PROJETO | REJEITADA\",\n  \"comentario\": \"texto\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Projetos e iniciativas",
+      "item": [
+        {
+          "name": "GET /api/projetos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/projetos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "projetos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/projetos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/projetos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "projetos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"texto\",\n  \"descricao\": \"texto\",\n  \"orientacaoId\": \"texto\",\n  \"ideiaOrigemId\": \"texto\",\n  \"totalEtapas\": \"número\",\n  \"dataInicio\": \"date\",\n  \"prazo\": \"date\",\n  \"investimento\": \"número\",\n  \"prazoCoerente\": \"true/false\"\n}"
+            }
+          }
+        },
+        {
+          "name": "GET /api/projetos/{id}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/projetos/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "projetos",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/projetos/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/projetos/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "projetos",
+                "{{id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"texto\",\n  \"descricao\": \"texto\",\n  \"orientacaoId\": \"texto\",\n  \"ideiaOrigemId\": \"texto\",\n  \"totalEtapas\": \"número\",\n  \"dataInicio\": \"date\",\n  \"prazo\": \"date\",\n  \"investimento\": \"número\",\n  \"prazoCoerente\": \"true/false\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/projetos/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/projetos/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "projetos",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/projetos/{id}/progresso",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/projetos/{{id}}/progresso",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "projetos",
+                "{{id}}",
+                "progresso"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"etapa\": \"número\",\n  \"progresso\": \"número\",\n  \"status\": \"NO_PRAZO | ATRASADO | CONCLUIDO | CANCELADO\",\n  \"observacao\": \"texto\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/projetos/{id}/resultados",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/projetos/{{id}}/resultados",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "projetos",
+                "{{id}}",
+                "resultados"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"retornoFinanceiro\": \"número\",\n  \"custoEvitado\": \"número\",\n  \"aumentoProdutividade\": \"número\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Dashboards e relatórios",
+      "item": [
+        {
+          "name": "GET /api/dashboard/gestor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/gestor",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "gestor"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/dashboard/orientacoes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/orientacoes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "orientacoes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/dashboard/orientacoes/{id}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/orientacoes/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "orientacoes",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/dashboard/projetos/{id}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/projetos/{{id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "projetos",
+                "{{id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/dashboard/resumo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/resumo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "resumo"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

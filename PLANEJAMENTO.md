@@ -185,8 +185,9 @@ backend/
 - [ ] B9 Testes: services (regras/permissões) + integração auth e fluxo principal
 - [x] B10 Containerização: Dockerfile multi-stage + docker-compose (API + Mongo 8.0) com healthcheck, tudo
   configurável por variáveis (`JWT_SECRET`, `JWT_EXPIRATION`, `MONGODB_URI`, `SEED_ENABLED`, `API_PORT`)
-- [ ] B11 CI GitHub Actions: build + testes do backend (e build do APK)
-- [ ] B12 Collection Postman/Insomnia exportada em `docs/`
+- [x] B11 CI no GitHub Actions: testes e empacotamento do backend + compilação do APK, publicado como artefato
+- [x] B12 Collection do Postman em `docs/postman_collection.json`: 27 requisições, login que salva o token
+  automaticamente e variáveis para trocar de perfil
 
 ## 8. App — tarefas de integração
 
@@ -227,8 +228,10 @@ backend/
   roteiro de avaliação por perfil, diagrama de arquitetura, endpoints, regras de negócio, testes,
   configuração e solução de problemas — validado executando o ambiente do zero
 - [ ] D2 `backend/README.md` com instruções de execução (exigido)
-- [ ] D3 Diagrama de arquitetura (app ↔ API ↔ MongoDB, camadas, JWT)
-- [ ] D4 Especificação de endpoints (rota, método, payload, resposta) — gerar a partir do OpenAPI
+- [x] D3 `docs/ARQUITETURA.md`: diagramas de arquitetura, fluxo de autenticação, domínio e ciclo de vida da ideia,
+  além das decisões técnicas e seus porquês
+- [x] D4 `docs/ENDPOINTS.md`: 27 endpoints com método, parâmetros, corpo e respostas, gerado a partir do OpenAPI,
+  com a tabela de códigos de erro comuns
 - [ ] D5 Apresentação PDF/PPT: nomes e RMs, diagrama, endpoints, prints do app, v1 → v2
 - [ ] D6 Vídeo de demonstração dos 3 perfis (recomendado, a v1 teve)
 - [ ] D7 Empacotar: `backend.zip` (sem `target/`), `app.zip` (sem `build/`, com APK), apresentação
