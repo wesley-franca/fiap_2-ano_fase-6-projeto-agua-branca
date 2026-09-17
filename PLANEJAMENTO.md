@@ -218,11 +218,14 @@ backend/
 - [x] A15 Navegação: um grafo por perfil (operador, gestor, liderança). O ViewModel é criado ao entrar no grafo e
   compartilhado entre as telas daquele perfil, então entrar como operador não dispara as chamadas dos outros perfis
   (que voltariam 403). Trocar de usuário leva para a home do novo perfil
-- [ ] A16 Gerar o APK da entrega (padrão: emulador acessando a API local) e testar o fluxo dos 3 perfis
+- [~] A16 APK da entrega gerado e verificado (`com.aguiabranca.inovacao` 2.0.0, minSdk 24, target 35, apontando
+  para a API local). **Falta** percorrer as telas dos 3 perfis no emulador — única parte do app ainda não vista rodando
 
 ## 9. Documentação e entrega
 
-- [ ] D1 `README.md` raiz: visão geral, arquitetura, como rodar (Docker), usuários de teste, Swagger
+- [x] D1 `README.md` raiz: pré-requisitos, passo a passo (Docker + Android Studio), usuários de teste,
+  roteiro de avaliação por perfil, diagrama de arquitetura, endpoints, regras de negócio, testes,
+  configuração e solução de problemas — validado executando o ambiente do zero
 - [ ] D2 `backend/README.md` com instruções de execução (exigido)
 - [ ] D3 Diagrama de arquitetura (app ↔ API ↔ MongoDB, camadas, JWT)
 - [ ] D4 Especificação de endpoints (rota, método, payload, resposta) — gerar a partir do OpenAPI
