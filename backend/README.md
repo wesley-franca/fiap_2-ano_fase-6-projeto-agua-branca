@@ -95,6 +95,11 @@ No Swagger, clique em **Authorize** e cole o token. Erros seguem o formato:
 | PATCH | `/api/projetos/{id}/progresso` | GESTOR |
 | PATCH | `/api/projetos/{id}/resultados` | GESTOR |
 | DELETE | `/api/projetos/{id}` | GESTOR |
+| GET | `/api/dashboard/gestor` | GESTOR |
+| GET | `/api/dashboard/resumo` | LIDERANCA |
+| GET | `/api/dashboard/orientacoes` | LIDERANCA |
+| GET | `/api/dashboard/orientacoes/{id}` | LIDERANCA |
+| GET | `/api/dashboard/projetos/{id}` | LIDERANCA |
 
 **Ideias.** Toda ideia nasce como `ENVIADA`, com prioridade `MEDIA`, autoria vinda do token e vínculo
 obrigatório a uma orientação ativa. O operador edita e exclui apenas as próprias e somente enquanto
@@ -112,6 +117,14 @@ vinculado a uma orientação e pode nascer de uma ideia que esteja em `DECISAO` 
 `PROJETO` e não pode originar outro. Cada atualização de progresso (etapa, percentual, status e observação)
 entra no histórico do projeto, e os resultados (retorno financeiro, custo evitado e aumento de produtividade)
 alimentam os indicadores da liderança.
+
+**Dashboards.** O gestor vê quantas ideias estão em cada etapa e quantos projetos estão ativos ou atrasados.
+A liderança vê os indicadores consolidados — investimento, retorno, lucro, ROI, custo evitado, produtividade
+média e percentual no prazo — junto com séries prontas para gráficos: projetos e ideias por status e resultado
+por orientação, ordenado por lucro. Também é possível abrir o detalhe de uma orientação ou de um projeto.
+
+`ROI = (retorno − investimento) / investimento`, e o lucro é sempre calculado, nunca armazenado. Projeto sem
+investimento registrado vem com `roi: null`, em vez de um número inventado.
 
 A exclusão de orientação é lógica: ela some das consultas, mas o histórico e os vínculos com ideias e
 projetos são preservados. Cada criação, alteração e exclusão gera um registro no histórico (data, ação,

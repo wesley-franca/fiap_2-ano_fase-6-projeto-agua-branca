@@ -174,7 +174,9 @@ backend/
 - [x] B6 Projetos: CRUD do gestor (liderança só consulta, operador sem acesso), vínculo obrigatório com orientação,
   origem opcional em ideia que esteja em `DECISAO` (marca a ideia como `PROJETO`, uma ideia por projeto),
   progresso com histórico de atualizações e registro de resultados (retorno, custo evitado, produtividade)
-- [ ] B7 Dashboard: agregações gestor, resumo liderança, por orientação, por projeto
+- [x] B7 Dashboard: painel do gestor (ideias por etapa e projetos ativos/atrasados) e visão executiva da liderança
+  (ROI, lucro, investimento, retorno, custo evitado, produtividade, % no prazo), séries para gráficos
+  (projetos e ideias por status, resultado por orientação ordenado por lucro) e detalhe por orientação e por projeto
 - **Convenção de DTOs:** campos booleanos/numéricos opcionais usam wrapper (`Boolean`, `Integer`), nunca primitivo —
   no Jackson 3 um primitivo ausente ou nulo faz a requisição falhar com 400 antes da validação.
 
