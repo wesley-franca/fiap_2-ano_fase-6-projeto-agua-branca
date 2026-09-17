@@ -3,11 +3,14 @@ package com.aguiabranca.inovacao.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aguiabranca.inovacao.data.model.DashboardMetricas
+import com.aguiabranca.inovacao.data.model.HistoricoOrientacao
 import com.aguiabranca.inovacao.data.model.Idea
 import com.aguiabranca.inovacao.data.model.IdeaPriority
 import com.aguiabranca.inovacao.data.model.IdeaStatus
 import com.aguiabranca.inovacao.data.model.Orientacao
 import com.aguiabranca.inovacao.data.model.Projeto
+import com.aguiabranca.inovacao.data.model.ResumoOrientacao
+import com.aguiabranca.inovacao.data.model.ResumoProjeto
 import com.aguiabranca.inovacao.data.repository.InovacaoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -233,8 +236,14 @@ data class LiderancaUiState(
     val metricas: DashboardMetricas = DashboardMetricas(),
     val orientacoes: List<Orientacao> = emptyList(),
     val projetos: List<Projeto> = emptyList(),
+    val porOrientacao: List<ResumoOrientacao> = emptyList(),
+    val projetosPorStatus: Map<String, Int> = emptyMap(),
+    val ideiasPorStatus: Map<String, Int> = emptyMap(),
+    val historico: List<HistoricoOrientacao> = emptyList(),
+    val projetoSelecionado: ResumoProjeto? = null,
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val operacaoConcluida: Boolean = false
 )
 
 class LiderancaViewModel : ViewModel() {
@@ -248,17 +257,81 @@ class LiderancaViewModel : ViewModel() {
     fun carregar() {
         _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
         viewModelScope.launch {
-            val metricas = InovacaoRepository.metricasDaLideranca()
+            val resumo = InovacaoRepository.resumoDaLideranca()
             val orientacoes = InovacaoRepository.orientacoes()
             val projetos = InovacaoRepository.projetos()
+            val dados = resumo.getOrNull()
 
-            _uiState.value = LiderancaUiState(
-                metricas = metricas.getOrDefault(DashboardMetricas()),
+            _uiState.value = _uiState.value.copy(
+                metricas = dados?.metricas ?: DashboardMetricas(),
+                porOrientacao = dados?.porOrientacao.orEmpty(),
+                projetosPorStatus = dados?.projetosPorStatus.orEmpty(),
+                ideiasPorStatus = dados?.ideiasPorStatus.orEmpty(),
                 orientacoes = orientacoes.getOrDefault(emptyList()),
                 projetos = projetos.getOrDefault(emptyList()),
                 isLoading = false,
-                errorMessage = primeiroErro(listOf(metricas, orientacoes, projetos))
+                errorMessage = primeiroErro(listOf(resumo, orientacoes, projetos))
             )
+        }
+    }
+
+    fun orientacao(id: String): Orientacao? = _uiState.value.orientacoes.firstOrNull { it.id == id }
+
+    fun carregarHistorico(orientacaoId: String) {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null, historico = emptyList())
+        viewModelScope.launch {
+            InovacaoRepository.historicoOrientacao(orientacaoId)
+                .onSuccess { _uiState.value = _uiState.value.copy(isLoading = false, historico = it) }
+                .onFailure { erro ->
+                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = erro.message)
+                }
+        }
+    }
+
+    fun carregarProjeto(projetoId: String) {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null, projetoSelecionado = null)
+        viewModelScope.launch {
+            InovacaoRepository.resumoDoProjeto(projetoId)
+                .onSuccess { _uiState.value = _uiState.value.copy(isLoading = false, projetoSelecionado = it) }
+                .onFailure { erro ->
+                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = erro.message)
+                }
+        }
+    }
+
+    fun salvarOrientacao(
+        id: String?,
+        titulo: String,
+        descricao: String,
+        categoria: String,
+        campanha: String,
+        area: String,
+        periodo: String,
+        indicadores: List<String>,
+        vigente: Boolean
+    ) = executar {
+        InovacaoRepository.salvarOrientacao(
+            id, titulo, descricao, categoria, campanha, area, periodo, indicadores, vigente
+        )
+    }
+
+    fun excluirOrientacao(id: String) = executar { InovacaoRepository.excluirOrientacao(id) }
+
+    fun operacaoTratada() {
+        _uiState.value = _uiState.value.copy(operacaoConcluida = false)
+    }
+
+    private fun executar(acao: suspend () -> Result<*>) {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null, operacaoConcluida = false)
+        viewModelScope.launch {
+            acao()
+                .onSuccess {
+                    carregar()
+                    _uiState.value = _uiState.value.copy(operacaoConcluida = true)
+                }
+                .onFailure { erro ->
+                    _uiState.value = _uiState.value.copy(isLoading = false, errorMessage = erro.message)
+                }
         }
     }
 }

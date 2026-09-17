@@ -76,9 +76,12 @@ Sair pelo botão de logout apaga o token do aparelho.
 |---|---|
 | Operador | orientação vigente, lista das próprias ideias, detalhe, cadastro e edição (com escolha da orientação) e exclusão |
 | Gestor | painel com KPIs, fila de ideias com filtros por etapa, prioridade e área, análise da ideia (priorizar, avançar etapa, rejeitar com motivo), projetos (criar, editar, excluir, atualizar progresso e registrar resultados) |
-| Liderança | dashboard executivo, orientações estratégicas e andamento dos projetos |
+| Liderança | dashboard executivo com gráficos, orientações estratégicas (criar, editar, excluir e histórico), andamento dos projetos e retorno detalhado de cada projeto |
+
+Os gráficos são desenhados em Canvas, sem biblioteca externa: lucro por orientação (barras),
+projetos por situação e ideias por etapa (distribuição com legenda).
 
 ## Pendências desta etapa
 
-- Liderança: CRUD de orientações, histórico de alterações e gráficos no dashboard.
-- Datas nos formulários de projeto são digitadas no formato `2026-12-31`; falta um seletor de data.
+- Datas nos formulários são digitadas no formato `2026-12-31`; falta um seletor de data.
+- Falta gerar o APK final apontando para o endereço definitivo da API.

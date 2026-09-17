@@ -1,17 +1,21 @@
 package com.aguiabranca.inovacao.data.repository
 
 import com.aguiabranca.inovacao.data.model.DashboardMetricas
+import com.aguiabranca.inovacao.data.model.HistoricoOrientacao
 import com.aguiabranca.inovacao.data.model.Idea
 import com.aguiabranca.inovacao.data.model.IdeaPriority
 import com.aguiabranca.inovacao.data.model.IdeaStatus
 import com.aguiabranca.inovacao.data.model.Orientacao
 import com.aguiabranca.inovacao.data.model.Projeto
+import com.aguiabranca.inovacao.data.model.ResumoOrientacao
+import com.aguiabranca.inovacao.data.model.ResumoProjeto
 import com.aguiabranca.inovacao.data.model.User
 import com.aguiabranca.inovacao.data.remote.ApiClient
 import com.aguiabranca.inovacao.data.remote.IdeiaDto
 import com.aguiabranca.inovacao.data.remote.LoginRequestDto
 import com.aguiabranca.inovacao.data.remote.NovaIdeiaDto
 import com.aguiabranca.inovacao.data.remote.OrientacaoDto
+import com.aguiabranca.inovacao.data.remote.OrientacaoRequestDto
 import com.aguiabranca.inovacao.data.remote.PainelGestorDto
 import com.aguiabranca.inovacao.data.remote.PrioridadeRequestDto
 import com.aguiabranca.inovacao.data.remote.ProgressoRequestDto
@@ -57,6 +61,46 @@ object InovacaoRepository {
     suspend fun orientacoes(apenasVigentes: Boolean = false): Result<List<Orientacao>> = chamar {
         api.orientacoes(if (apenasVigentes) true else null).map { it.paraOrientacao() }
     }
+
+    suspend fun historicoOrientacao(id: String): Result<List<HistoricoOrientacao>> = chamar {
+        api.historicoOrientacao(id).map {
+            HistoricoOrientacao(
+                data = Formatadores.tempoRelativo(it.data),
+                acao = it.acao.orEmpty(),
+                titulo = it.titulo.orEmpty(),
+                categoria = it.categoria.orEmpty(),
+                campanha = it.campanha.orEmpty(),
+                autor = it.alteradoPorNome.orEmpty()
+            )
+        }
+    }
+
+    suspend fun salvarOrientacao(
+        id: String?,
+        titulo: String,
+        descricao: String,
+        categoria: String,
+        campanha: String,
+        area: String,
+        periodo: String,
+        indicadores: List<String>,
+        vigente: Boolean
+    ): Result<Orientacao> = chamar {
+        val corpo = OrientacaoRequestDto(
+            titulo = titulo,
+            descricao = descricao,
+            categoria = categoria,
+            campanha = campanha,
+            area = area,
+            periodo = periodo,
+            indicadores = indicadores.filter { it.isNotBlank() },
+            vigente = vigente
+        )
+        val resposta = if (id == null) api.criarOrientacao(corpo) else api.atualizarOrientacao(id, corpo)
+        resposta.paraOrientacao()
+    }
+
+    suspend fun excluirOrientacao(id: String): Result<Unit> = chamar { api.excluirOrientacao(id) }
 
     suspend fun minhasIdeias(): Result<List<Idea>> = chamar {
         api.ideias().map { it.paraIdeia() }
@@ -180,6 +224,64 @@ object InovacaoRepository {
         )
     }
 
+    /** Resumo completo: indicadores para os KPIs e séries para os gráficos. */
+    suspend fun resumoDaLideranca(): Result<ResumoDashboard> = chamar {
+        val resposta = api.resumoLideranca()
+        val i = resposta.indicadores
+        ResumoDashboard(
+            metricas = DashboardMetricas(
+                roi = Formatadores.multiplicador(i.roi),
+                lucro = Formatadores.moeda(i.lucro),
+                projetosAtivos = i.projetosAtivos,
+                noPrazo = i.projetosNoPrazo,
+                custoEvitado = Formatadores.moeda(i.custoEvitadoTotal),
+                produtividade = Formatadores.percentualComSinal(i.produtividadeMedia)
+            ),
+            projetosPorStatus = resposta.projetosPorStatus.orEmpty(),
+            ideiasPorStatus = resposta.ideiasPorStatus.orEmpty(),
+            porOrientacao = resposta.porOrientacao.orEmpty().map { o ->
+                ResumoOrientacao(
+                    orientacaoId = o.orientacaoId,
+                    titulo = o.titulo,
+                    campanha = o.campanha.orEmpty(),
+                    ideias = o.ideias,
+                    projetos = o.indicadores.totalProjetos,
+                    lucro = o.indicadores.lucro ?: 0.0,
+                    investimento = o.indicadores.investimentoTotal ?: 0.0,
+                    retorno = o.indicadores.retornoTotal ?: 0.0,
+                    roi = o.indicadores.roi
+                )
+            }
+        )
+    }
+
+    suspend fun resumoDoProjeto(id: String): Result<ResumoProjeto> = chamar {
+        val p = api.resumoProjeto(id)
+        ResumoProjeto(
+            id = p.id,
+            nome = p.nome,
+            status = Formatadores.statusProjeto(p.status),
+            etapa = p.etapa,
+            totalEtapas = p.totalEtapas,
+            progresso = p.progresso,
+            prazo = Formatadores.dataCurta(p.prazo),
+            orientacaoTitulo = p.orientacaoTitulo.orEmpty(),
+            investimento = Formatadores.moeda(p.investimento),
+            retorno = Formatadores.moeda(p.retornoFinanceiro),
+            lucro = Formatadores.moeda(p.lucro),
+            roi = Formatadores.multiplicador(p.roi),
+            custoEvitado = Formatadores.moeda(p.custoEvitado),
+            produtividade = Formatadores.percentualComSinal(p.aumentoProdutividade)
+        )
+    }
+
+    data class ResumoDashboard(
+        val metricas: DashboardMetricas,
+        val projetosPorStatus: Map<String, Int>,
+        val ideiasPorStatus: Map<String, Int>,
+        val porOrientacao: List<ResumoOrientacao>
+    )
+
     // ----- Conversão API -> modelos das telas -----
 
     private fun UsuarioDto.paraUsuario() = User(
@@ -191,16 +293,20 @@ object InovacaoRepository {
     )
 
     private fun OrientacaoDto.paraOrientacao(): Orientacao {
-        val indicadores = indicadores.orEmpty()
+        val lista = indicadores.orEmpty()
         return Orientacao(
             id = id,
             titulo = titulo,
             descricao = descricao.orEmpty(),
             area = area.orEmpty(),
             periodo = periodo.orEmpty(),
-            indicador1 = indicadores.getOrElse(0) { "" },
-            indicador2 = indicadores.getOrElse(1) { "" },
-            indicador3 = indicadores.getOrElse(2) { "" }
+            indicador1 = lista.getOrElse(0) { "" },
+            indicador2 = lista.getOrElse(1) { "" },
+            indicador3 = lista.getOrElse(2) { "" },
+            categoria = categoria.orEmpty(),
+            campanha = campanha.orEmpty(),
+            indicadores = lista,
+            vigente = vigente
         )
     }
 

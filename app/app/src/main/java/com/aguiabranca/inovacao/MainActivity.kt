@@ -30,10 +30,15 @@ import com.aguiabranca.inovacao.ui.screens.gestor.FilaIdeiasScreen
 import com.aguiabranca.inovacao.ui.screens.gestor.FormularioProjetoScreen
 import com.aguiabranca.inovacao.ui.screens.gestor.GestorPainelScreen
 import com.aguiabranca.inovacao.ui.screens.gestor.ProjetosGestorScreen
+import com.aguiabranca.inovacao.ui.screens.lideranca.DetalheProjetoLiderancaScreen
+import com.aguiabranca.inovacao.ui.screens.lideranca.FormularioOrientacaoScreen
+import com.aguiabranca.inovacao.ui.screens.lideranca.HistoricoOrientacaoScreen
 import com.aguiabranca.inovacao.ui.screens.lideranca.LiderancaDashboardScreen
+import com.aguiabranca.inovacao.ui.screens.lideranca.OrientacoesScreen
 import com.aguiabranca.inovacao.ui.theme.AppTheme
 import com.aguiabranca.inovacao.ui.viewmodel.AuthViewModel
 import com.aguiabranca.inovacao.ui.viewmodel.GestorViewModel
+import com.aguiabranca.inovacao.ui.viewmodel.LiderancaViewModel
 import com.aguiabranca.inovacao.ui.viewmodel.OperadorViewModel
 
 class MainActivity : ComponentActivity() {
@@ -60,6 +65,7 @@ fun AppNavigation() {
     val sessaoExpirada by Sessao.expirada.collectAsState()
     val operadorViewModel: OperadorViewModel = viewModel()
     val gestorViewModel: GestorViewModel = viewModel()
+    val liderancaViewModel: LiderancaViewModel = viewModel()
 
     // A API recusou o token durante o uso: derruba a sessão e volta ao login.
     LaunchedEffect(sessaoExpirada) {
@@ -213,10 +219,54 @@ fun AppNavigation() {
         // Liderança
         composable("lideranca_dashboard") {
             LiderancaDashboardScreen(
+                viewModel = liderancaViewModel,
+                onAbrirOrientacoes = { navController.navigate("orientacoes") },
+                onAbrirProjeto = { id -> navController.navigate("retorno_projeto/$id") },
                 onLogout = {
                     authViewModel.logout()
                     navController.navigate("login") { popUpTo("lideranca_dashboard") { inclusive = true } }
                 }
+            )
+        }
+
+        composable("orientacoes") {
+            OrientacoesScreen(
+                viewModel = liderancaViewModel,
+                onNova = { navController.navigate("nova_orientacao") },
+                onEditar = { id -> navController.navigate("editar_orientacao/$id") },
+                onHistorico = { id -> navController.navigate("historico_orientacao/$id") },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("nova_orientacao") {
+            FormularioOrientacaoScreen(
+                viewModel = liderancaViewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("editar_orientacao/{id}") { entrada ->
+            FormularioOrientacaoScreen(
+                viewModel = liderancaViewModel,
+                orientacaoId = entrada.arguments?.getString("id"),
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("historico_orientacao/{id}") { entrada ->
+            HistoricoOrientacaoScreen(
+                orientacaoId = entrada.arguments?.getString("id").orEmpty(),
+                viewModel = liderancaViewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("retorno_projeto/{id}") { entrada ->
+            DetalheProjetoLiderancaScreen(
+                projetoId = entrada.arguments?.getString("id").orEmpty(),
+                viewModel = liderancaViewModel,
+                onBack = { navController.popBackStack() }
             )
         }
     }

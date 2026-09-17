@@ -20,6 +20,18 @@ interface ApiService {
     @GET("api/orientacoes")
     suspend fun orientacoes(@Query("vigente") vigente: Boolean? = null): List<OrientacaoDto>
 
+    @GET("api/orientacoes/{id}/historico")
+    suspend fun historicoOrientacao(@Path("id") id: String): List<HistoricoDto>
+
+    @POST("api/orientacoes")
+    suspend fun criarOrientacao(@Body request: OrientacaoRequestDto): OrientacaoDto
+
+    @PUT("api/orientacoes/{id}")
+    suspend fun atualizarOrientacao(@Path("id") id: String, @Body request: OrientacaoRequestDto): OrientacaoDto
+
+    @DELETE("api/orientacoes/{id}")
+    suspend fun excluirOrientacao(@Path("id") id: String)
+
     @GET("api/ideias")
     suspend fun ideias(@Query("status") status: String? = null): List<IdeiaDto>
 
@@ -64,4 +76,7 @@ interface ApiService {
 
     @GET("api/dashboard/resumo")
     suspend fun resumoLideranca(): ResumoLiderancaDto
+
+    @GET("api/dashboard/projetos/{id}")
+    suspend fun resumoProjeto(@Path("id") id: String): ResumoProjetoDto
 }

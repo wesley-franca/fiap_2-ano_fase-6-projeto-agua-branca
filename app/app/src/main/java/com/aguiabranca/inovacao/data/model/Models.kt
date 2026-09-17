@@ -32,7 +32,52 @@ data class Orientacao(
     val periodo: String = "",
     val indicador1: String = "",
     val indicador2: String = "",
-    val indicador3: String = ""
+    val indicador3: String = "",
+    val categoria: String = "",
+    val campanha: String = "",
+    val indicadores: List<String> = emptyList(),
+    val vigente: Boolean = false
+)
+
+/** Um registro do histórico de alterações de uma orientação. */
+data class HistoricoOrientacao(
+    val data: String = "",
+    val acao: String = "",
+    val titulo: String = "",
+    val categoria: String = "",
+    val campanha: String = "",
+    val autor: String = ""
+)
+
+/** Resultado consolidado de uma orientação, usado nos gráficos da liderança. */
+data class ResumoOrientacao(
+    val orientacaoId: String = "",
+    val titulo: String = "",
+    val campanha: String = "",
+    val ideias: Int = 0,
+    val projetos: Int = 0,
+    val lucro: Double = 0.0,
+    val investimento: Double = 0.0,
+    val retorno: Double = 0.0,
+    val roi: Double? = null
+)
+
+/** Retorno detalhado de um projeto para a liderança. */
+data class ResumoProjeto(
+    val id: String = "",
+    val nome: String = "",
+    val status: String = "",
+    val etapa: Int = 0,
+    val totalEtapas: Int = 0,
+    val progresso: Int = 0,
+    val prazo: String = "",
+    val orientacaoTitulo: String = "",
+    val investimento: String = "",
+    val retorno: String = "",
+    val lucro: String = "",
+    val roi: String = "",
+    val custoEvitado: String = "",
+    val produtividade: String = ""
 )
 
 data class Idea(

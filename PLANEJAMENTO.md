@@ -208,9 +208,11 @@ backend/
   - [x] A11 Projetos: lista, cadastro, edição, exclusão com confirmação, atualização de progresso (etapa, %, status,
     observação) e registro de resultados (retorno, custo evitado, produtividade)
 - [ ] **Liderança**
-  - [ ] A12 Dashboard com KPIs reais + **gráficos** (Vico ou Canvas): retorno por orientação, status dos projetos, investimento × retorno
-  - [ ] A13 CRUD de orientações + tela de histórico
-  - [ ] A14 Andamento de projetos com retorno financeiro + detalhe por projeto/orientação
+  - [x] A12 Dashboard com KPIs reais + gráficos desenhados em Canvas (sem biblioteca externa): lucro por orientação,
+    projetos por situação e ideias por etapa
+  - [x] A13 CRUD de orientações pela liderança (criar, editar, excluir com confirmação) + tela de histórico de alterações
+  - [x] A14 Andamento com retorno financeiro no card e tela de retorno do projeto (investimento, retorno, lucro,
+    ROI, custo evitado e produtividade), além do consolidado por orientação no dashboard
 - [ ] A15 Navegação: novas rotas, bottom bar/abas por perfil, guarda de rota por role
 - [ ] A16 Gerar APK (debug/release) com URL configurável; testar no emulador e em aparelho físico na mesma rede
 

@@ -124,7 +124,58 @@ data class PainelGestorDto(
     val projetosAtrasados: Int
 )
 
-data class ResumoLiderancaDto(val indicadores: IndicadoresDto)
+data class ResumoLiderancaDto(
+    val indicadores: IndicadoresDto,
+    val projetosPorStatus: Map<String, Int>?,
+    val ideiasPorStatus: Map<String, Int>?,
+    val porOrientacao: List<ResumoOrientacaoDto>?
+)
+
+data class ResumoOrientacaoDto(
+    val orientacaoId: String,
+    val titulo: String,
+    val campanha: String?,
+    val area: String?,
+    val ideias: Int,
+    val indicadores: IndicadoresDto
+)
+
+data class ResumoProjetoDto(
+    val id: String,
+    val nome: String,
+    val status: String,
+    val etapa: Int,
+    val totalEtapas: Int,
+    val progresso: Int,
+    val prazo: String?,
+    val orientacaoTitulo: String?,
+    val investimento: Double?,
+    val retornoFinanceiro: Double?,
+    val lucro: Double?,
+    val roi: Double?,
+    val custoEvitado: Double?,
+    val aumentoProdutividade: Double?
+)
+
+data class OrientacaoRequestDto(
+    val titulo: String,
+    val descricao: String,
+    val categoria: String,
+    val campanha: String,
+    val area: String,
+    val periodo: String,
+    val indicadores: List<String>,
+    val vigente: Boolean
+)
+
+data class HistoricoDto(
+    val data: String?,
+    val acao: String?,
+    val titulo: String?,
+    val categoria: String?,
+    val campanha: String?,
+    val alteradoPorNome: String?
+)
 
 data class IndicadoresDto(
     val totalProjetos: Int,
