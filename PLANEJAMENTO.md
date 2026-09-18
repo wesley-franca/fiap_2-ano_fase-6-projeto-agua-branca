@@ -219,8 +219,8 @@ backend/
 - [x] A15 Navegação: um grafo por perfil (operador, gestor, liderança). O ViewModel é criado ao entrar no grafo e
   compartilhado entre as telas daquele perfil, então entrar como operador não dispara as chamadas dos outros perfis
   (que voltariam 403). Trocar de usuário leva para a home do novo perfil
-- [~] A16 APK da entrega gerado e verificado (`com.aguiabranca.inovacao` 2.0.0, minSdk 24, target 35, apontando
-  para a API local). **Falta** percorrer as telas dos 3 perfis no emulador — única parte do app ainda não vista rodando
+- [x] A16 APK da entrega gerado e verificado (`com.aguiabranca.inovacao` 2.0.0, minSdk 24, target 35,
+  apontando para a API local) e **fluxo dos 3 perfis percorrido no emulador** com a API no ar
 
 ## 9. Documentação e entrega
 
