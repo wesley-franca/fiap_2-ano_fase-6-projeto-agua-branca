@@ -47,8 +47,14 @@ Para parar: `Ctrl+C` e depois `docker compose down`. Para zerar o banco: `docker
 ### Opção A — emulador (recomendada)
 
 1. Abra a pasta `app/` no Android Studio (`File → Open`).
-2. Aguarde a sincronização do Gradle.
-3. `Run → Run 'app'` em um emulador com Android 7.0 (API 24) ou superior.
+2. **Confira o Gradle JDK** (veja o aviso abaixo).
+3. Aguarde a sincronização do Gradle.
+4. `Run → Run 'app'` em um emulador com Android 7.0 (API 24) ou superior.
+
+> **Se aparecer `Incompatible Gradle JVM version`:** versões recentes do Android Studio trazem o Java 25
+> embutido, e o Gradle deste projeto aceita até o Java 21. Em
+> `Settings → Build, Execution, Deployment → Build Tools → Gradle`, mude **Gradle JDK** para um **JDK 17**
+> (ou 21) e sincronize de novo. O Android Studio oferece baixar um pelo próprio menu, caso não haja nenhum.
 
 No emulador, o endereço `10.0.2.2` aponta para o computador onde a API está rodando. Já é o padrão do projeto,
 não precisa configurar nada.
