@@ -183,6 +183,8 @@ Todas as variáveis têm valor padrão; para alterar, copie `backend/.env.exampl
 | Sintoma | O que fazer |
 |---|---|
 | `port is already allocated` ao subir | outra coisa usa a porta 8080: `API_PORT=8090` no `.env` e use `-PapiBaseUrl=http://10.0.2.2:8090/` |
+| App abre e fecha sozinho, ou fica com a tela preta | falta de memória no emulador: use um AVD com **3 GB de RAM** (`Device Manager → editar → Show Advanced Settings → RAM`) e prefira uma imagem **sem Play Store**, que é bem mais leve. Fechar o Android Studio durante o teste também ajuda |
+| Aviso "This app isn't 16 KB compatible" | é aviso do Android 15+, não erro do app: toque em **OK** e ele roda em modo de compatibilidade |
 | App abre mas não carrega nada | confira se a API responde: http://localhost:8080/actuator/health |
 | App no celular não conecta | celular e computador precisam estar na mesma rede, e o APK precisa ter sido gerado com o IP da máquina |
 | `permission denied` no Docker (Linux) | rode com `sudo` ou adicione seu usuário ao grupo `docker` |
