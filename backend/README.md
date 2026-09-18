@@ -133,7 +133,7 @@ título, categoria, campanha e autor).
 ## Executar sem Docker (desenvolvimento)
 
 Pré-requisitos: JDK 21 e um MongoDB acessível em `localhost:27017`
-(ex.: `docker run -d --name inovacao-mongo-dev -p 27017:27017 mongo:8.0`).
+(ex.: `docker run -d --name inovacao-mongo-dev -p 27017:27017 mongo:8.2`).
 
 ```bash
 ./mvnw spring-boot:run          # usa mongodb://localhost:27017/inovacao
