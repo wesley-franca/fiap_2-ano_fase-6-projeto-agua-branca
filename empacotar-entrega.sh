@@ -36,8 +36,15 @@ echo "==> Documentação"
 zip -qr "$SAIDA/documentacao.zip" docs README.md PLANEJAMENTO.md
 echo "    $(du -h "$SAIDA/documentacao.zip" | cut -f1)"
 
+echo "==> Apresentação"
+for arquivo in docs/APRESENTACAO.pptx docs/APRESENTACAO.pdf; do
+  [ -f "$RAIZ/$arquivo" ] && cp "$RAIZ/$arquivo" "$SAIDA/" && echo "    $(basename "$arquivo") copiada para entrega/"
+done
+
 echo
 echo "Pronto. Arquivos em entrega/:"
 ls -lh "$SAIDA" | tail -n +2 | awk '{print "  " $9 " (" $5 ")"}'
 echo
-echo "Falta anexar a apresentação (PDF/PPT) — veja docs/APRESENTACAO.md"
+echo "Para enviar na plataforma: backend.zip, app.zip e a apresentação."
+grep -q "PREENCHER" "$RAIZ/docs/APRESENTACAO.md" 2>/dev/null &&
+  echo "Atenção: a capa ainda tem espaços marcados com [PREENCHER] — confira nomes e RMs."
