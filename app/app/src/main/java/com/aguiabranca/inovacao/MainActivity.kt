@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
@@ -272,6 +273,10 @@ private fun sair(authViewModel: AuthViewModel, navController: NavHostController)
 /**
  * ViewModel compartilhado pelas telas de um mesmo perfil: vive enquanto o grafo daquele perfil
  * estiver na pilha, então entrar como operador não cria os ViewModels de gestor e liderança.
+ *
+ * A entrada do grafo é guardada na primeira composição. No logout o grafo sai da pilha antes de a
+ * tela terminar a animação de saída; sem o `remember`, a busca falharia nesse intervalo e criaria um
+ * ViewModel novo, que recarregaria os dados já sem token.
  */
 @Composable
 private inline fun <reified T : ViewModel> viewModelDoGrafo(
@@ -279,6 +284,8 @@ private inline fun <reified T : ViewModel> viewModelDoGrafo(
     entrada: NavBackStackEntry,
     rotaDoGrafo: String
 ): T {
-    val dono = runCatching { navController.getBackStackEntry(rotaDoGrafo) }.getOrDefault(entrada)
+    val dono = remember(entrada) {
+        runCatching { navController.getBackStackEntry(rotaDoGrafo) }.getOrDefault(entrada)
+    }
     return viewModel(viewModelStoreOwner = dono)
 }
