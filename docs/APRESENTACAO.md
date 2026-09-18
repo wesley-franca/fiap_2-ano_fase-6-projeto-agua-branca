@@ -1,6 +1,7 @@
 # Roteiro da apresentação — Sprint 2
 
 Conteúdo pronto para virar slides (PDF ou PPT). O que está marcado com **[preencher]** depende de você.
+Os slides estão em `APRESENTACAO.pptx` e `APRESENTACAO.pdf`.
 
 ---
 
@@ -9,7 +10,13 @@ Conteúdo pronto para virar slides (PDF ou PPT). O que está marcado com **[pree
 **Plataforma de Inovação · Grupo Águia Branca**
 Challenge FIAP — 2º ano, Fase 6 · Sprint 2 · Grupo 42
 
-**[preencher]** Nome completo e RM de cada integrante.
+Integrantes:
+
+- Mateus Bhering Beltrão Santos — RM564760
+- Ariel Alves Amaral — RM564563
+- Wesley Santos de França — RM563666
+- Ronaldo dos Santos Silva — RM561414
+- Rodrigo Kumamoto Rêgo — RM566049
 
 ---
 
@@ -53,7 +60,7 @@ Incluir o diagrama de autenticação de [ARQUITETURA.md](ARQUITETURA.md).
 
 ## Slide 5 — O que cada perfil vê no app
 
-**[preencher]** Prints do app: home do operador, fila do gestor e dashboard da liderança.
+Prints em `prints/`: login, home do operador, painel do gestor e dashboard da liderança.
 
 - **Operador:** orientação vigente, suas ideias, cadastro com vínculo à estratégia.
 - **Gestor:** KPIs, fila com filtros, análise da ideia, projetos com progresso e resultados.
@@ -135,7 +142,7 @@ Passo a passo completo, roteiro de avaliação e solução de problemas no READM
 
 ## Checklist antes de gravar/apresentar
 
-- [ ] Nomes e RMs preenchidos
-- [ ] Prints atualizados das telas
+- [x] Nomes e RMs preenchidos
+- [x] Prints atualizados das telas
 - [ ] API rodando para a demonstração ao vivo
 - [ ] Ensaio do fluxo: operador cria ideia → gestor aprova → vira projeto → liderança vê o retorno

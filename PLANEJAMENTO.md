@@ -165,7 +165,7 @@ backend/
 ├── Dockerfile · docker-compose.yml · .env.example · README.md
 ```
 
-- [x] B1 Setup Spring Initializr (Boot 4.1.1, Java 21: webmvc, security, data-mongodb, validation, actuator, lombok, springdoc 3.1.1, testcontainers), Dockerfile multi-stage, Docker Compose (API + Mongo 8.0) — JWT entra no B2 (OAuth2 Resource Server)
+- [x] B1 Setup Spring Initializr (Boot 4.1.1, Java 21: webmvc, security, data-mongodb, validation, actuator, lombok, springdoc 3.1.1, testcontainers), Dockerfile multi-stage, Docker Compose (API + Mongo 8.2) — JWT entra no B2 (OAuth2 Resource Server)
 - [x] B2 Auth: login com BCrypt (tempo constante p/ e-mail inexistente), JWT HS256 com expiração e claim `role`, validação via OAuth2 Resource Server, 401/403 em JSON padronizado, `/auth/me`, `@EnableMethodSecurity`
 - [x] B3 Seed idempotente: 5 usuários (3 contas da v1 + 2 operadores), 3 orientações, 5 ideias, 11 projetos que reproduzem os KPIs da v1; índices `@Indexed` criados na inicialização
 - [x] B4 Orientações: CRUD (escrita só para LIDERANCA), exclusão lógica, histórico automático (criação/atualização/exclusão), filtros `vigente` e `area`
@@ -185,7 +185,7 @@ backend/
   o cliente é app nativo, não navegador
 - [x] B9 Testes: 69 testes de integração com Testcontainers (autenticação, permissões, regras de dono,
   transições de status e cálculo dos indicadores)
-- [x] B10 Containerização: Dockerfile multi-stage + docker-compose (API + Mongo 8.0) com healthcheck, tudo
+- [x] B10 Containerização: Dockerfile multi-stage + docker-compose (API + Mongo 8.2) com healthcheck, tudo
   configurável por variáveis (`JWT_SECRET`, `JWT_EXPIRATION`, `MONGODB_URI`, `SEED_ENABLED`, `API_PORT`)
 - [x] B11 CI no GitHub Actions: testes e empacotamento do backend + compilação do APK, publicado como artefato
 - [x] B12 Collection do Postman em `docs/postman_collection.json`: 27 requisições, login que salva o token
@@ -234,13 +234,15 @@ backend/
   além das decisões técnicas e seus porquês
 - [x] D4 `docs/ENDPOINTS.md`: 27 endpoints com método, parâmetros, corpo e respostas, gerado a partir do OpenAPI,
   com a tabela de códigos de erro comuns
-- [~] D5 Roteiro completo em `docs/APRESENTACAO.md` (11 slides com conteúdo pronto).
-  **Falta** preencher nomes e RMs, inserir os prints e exportar em PDF/PPT
+- [x] D5 Apresentação em `docs/APRESENTACAO.pptx` e `.pdf` (11 slides) com nomes e RMs na capa e os prints
+  dos três perfis no slide 5
 - [ ] D6 Vídeo de demonstração dos 3 perfis (recomendado, a v1 teve)
 - [x] D7 `./empacotar-entrega.sh` gera `entrega/` com backend.zip, app.zip (com o APK dentro e solto) e
   documentacao.zip — testado: nenhum arquivo de build entrou nos pacotes
-- [~] D8 Checklist verificado hoje: compose sobe do zero, APK instala, os 3 perfis logam e nenhum mock restou.
-  **Falta** rodar `./empacotar-entrega.sh` quando a apresentação estiver pronta
+- [x] D8 Checklist verificado (18/09): compose sobe do zero, 69 testes passando, APK instala, os 3 perfis logam,
+  nenhum mock restou e `./empacotar-entrega.sh` gera a entrega final.
+  Ajustes feitos na verificação: MongoDB 8.0 → 8.2 (a 8.0 não sobe no kernel do Docker Desktop atual) e
+  logout que exibia "sessão expirada" por recarregar o painel sem token
 
 ## 10. Cronograma (hoje 14/09 → entrega 21/09)
 
@@ -276,6 +278,7 @@ backend/
 
 ## 13. Pendências
 
-- [ ] Integrantes e RMs do Grupo 42 (hoje só Wesley na plataforma)
+- [x] Integrantes e RMs do Grupo 42 (18/09): Mateus Bhering Beltrão Santos RM564760, Ariel Alves Amaral RM564563,
+  Wesley Santos de França RM563666, Ronaldo dos Santos Silva RM561414, Rodrigo Kumamoto Rêgo RM566049
 - [x] **Forma de entrega definida (17/09):** correção roda localmente com Docker; nenhuma hospedagem necessária
 - [ ] Reavaliar Diferencial IA se sobrar tempo

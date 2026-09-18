@@ -354,7 +354,8 @@ object InovacaoRepository {
             Result.success(bloco())
         } catch (e: HttpException) {
             val mensagem = ApiClient.mensagemDeErro(e.response()?.errorBody()?.string())
-            if (e.code() == 401) {
+            // Sem token o usuário já saiu: um 401 aqui não é sessão expirada.
+            if (e.code() == 401 && Sessao.token != null) {
                 Sessao.expirar()
             }
             Result.failure(Exception(mensagem ?: mensagemPadrao(e.code())))

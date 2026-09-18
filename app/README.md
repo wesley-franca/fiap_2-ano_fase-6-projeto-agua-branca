@@ -16,13 +16,13 @@ docker compose up --build
 
 1. `File → Open` e selecione a pasta `app/` deste repositório.
 2. Em `Settings → Build, Execution, Deployment → Build Tools → Gradle`, confira se **Gradle JDK** é um
-   **JDK 17** ou **21** (veja a nota abaixo).
+   **JDK 17** (veja a nota abaixo).
 3. Aguarde a sincronização do Gradle.
 4. `Run → Run 'app'` em um emulador.
 
-> **Erro `Incompatible Gradle JVM version`?** O Android Studio recente embute o Java 25, e o Gradle 8.5
-> usado aqui roda em Java 8 a 21. Selecionar um JDK 17 no campo **Gradle JDK** resolve — o projeto em si
-> não muda. O mesmo vale pela linha de comando: `JAVA_HOME=/caminho/do/jdk-17 ./gradlew assembleDebug`.
+> **Erro `Incompatible Gradle JVM version` ou falha no `jlink`?** O Android Studio recente embute o Java 21
+> ou 25, e o AGP 8.1 usado aqui só compila com Java 17. Selecionar um JDK 17 no campo **Gradle JDK** resolve —
+> o projeto em si não muda. O mesmo vale pela linha de comando: `JAVA_HOME=/caminho/do/jdk-17 ./gradlew assembleDebug`.
 >
 > Mantivemos Gradle 8.5 e AGP 8.1.2 de propósito: subir para uma versão que aceite o Java 25 exigiria
 > AGP 9 e Kotlin 2.2, uma troca grande de toolchain sem ganho para o funcionamento do app.
@@ -98,4 +98,3 @@ somente ao entrar nele — um operador não dispara as consultas de gestor e lid
 ## Pendências desta etapa
 
 - Datas nos formulários são digitadas no formato `2026-12-31`; falta um seletor de data.
-- Falta gerar o APK final apontando para o endereço definitivo da API.

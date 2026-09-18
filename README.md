@@ -54,7 +54,7 @@ Para parar: `Ctrl+C` e depois `docker compose down`. Para zerar o banco: `docker
 > **Se aparecer `Incompatible Gradle JVM version`:** versões recentes do Android Studio trazem o Java 25
 > embutido, e o Gradle deste projeto aceita até o Java 21. Em
 > `Settings → Build, Execution, Deployment → Build Tools → Gradle`, mude **Gradle JDK** para um **JDK 17**
-> (ou 21) e sincronize de novo. O Android Studio oferece baixar um pelo próprio menu, caso não haja nenhum.
+> e sincronize de novo. O JDK 21 embutido no Android Studio não serve: o build falha com um erro do `jlink`. O Android Studio oferece baixar um pelo próprio menu, caso não haja nenhum.
 
 No emulador, o endereço `10.0.2.2` aponta para o computador onde a API está rodando. Já é o padrão do projeto,
 não precisa configurar nada.
@@ -182,6 +182,7 @@ Todas as variáveis têm valor padrão; para alterar, copie `backend/.env.exampl
 
 | Sintoma | O que fazer |
 |---|---|
+| `MongoDB cannot start: Linux kernel versions 6.19 and newer...` | versões antigas da imagem do Mongo não sobem no kernel do Docker Desktop atual. O compose já usa `mongo:8.2`, que funciona; se você trocou a imagem, volte para 8.2 ou mais nova |
 | `port is already allocated` ao subir | outra coisa usa a porta 8080: `API_PORT=8090` no `.env` e use `-PapiBaseUrl=http://10.0.2.2:8090/` |
 | App abre e fecha sozinho, ou fica com a tela preta | falta de memória no emulador: use um AVD com **3 GB de RAM** (`Device Manager → editar → Show Advanced Settings → RAM`) e prefira uma imagem **sem Play Store**, que é bem mais leve. Fechar o Android Studio durante o teste também ajuda |
 | Aviso "This app isn't 16 KB compatible" | é aviso do Android 15+, não erro do app: toque em **OK** e ele roda em modo de compatibilidade |
@@ -193,5 +194,13 @@ Todas as variáveis têm valor padrão; para alterar, copie `backend/.env.exampl
 ## 12. Entrega
 
 Challenge Grupo Águia Branca — Sprint 2 · Grupo 42 · FIAP 2TDS.
+
+**Integrantes**
+
+- Mateus Bhering Beltrão Santos — RM564760
+- Ariel Alves Amaral — RM564563
+- Wesley Santos de França — RM563666
+- Ronaldo dos Santos Silva — RM561414
+- Rodrigo Kumamoto Rêgo — RM566049
 
 Planejamento e andamento das tarefas em [PLANEJAMENTO.md](PLANEJAMENTO.md).
