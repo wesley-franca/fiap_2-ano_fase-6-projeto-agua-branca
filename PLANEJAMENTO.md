@@ -181,8 +181,10 @@ backend/
 - **Convenção de DTOs:** campos booleanos/numéricos opcionais usam wrapper (`Boolean`, `Integer`), nunca primitivo —
   no Jackson 3 um primitivo ausente ou nulo faz a requisição falhar com 400 antes da validação.
 
-- [ ] B8 Validação (Bean Validation), handler global, CORS, OpenAPI com esquema Bearer
-- [ ] B9 Testes: services (regras/permissões) + integração auth e fluxo principal
+- [x] B8 Validação (Bean Validation), handler global de erros e OpenAPI com esquema Bearer — CORS não se aplica:
+  o cliente é app nativo, não navegador
+- [x] B9 Testes: 69 testes de integração com Testcontainers (autenticação, permissões, regras de dono,
+  transições de status e cálculo dos indicadores)
 - [x] B10 Containerização: Dockerfile multi-stage + docker-compose (API + Mongo 8.0) com healthcheck, tudo
   configurável por variáveis (`JWT_SECRET`, `JWT_EXPIRATION`, `MONGODB_URI`, `SEED_ENABLED`, `API_PORT`)
 - [x] B11 CI no GitHub Actions: testes e empacotamento do backend + compilação do APK, publicado como artefato
@@ -196,21 +198,21 @@ backend/
   sobrescrevível com `-PapiBaseUrl=`), `networkSecurityConfig` liberando HTTP local — DataStore fica para o A5
 - [x] A3 Camada de dados: `ApiService` (Retrofit), DTOs, interceptor com Bearer, erros da API traduzidos para mensagem legível,
   `InovacaoRepository` único e **`MockRepository` removido**; ViewModels com carregamento e erro
-- [ ] A4 Modelos: valores numéricos/datas, formatação (moeda BRL, datas relativas) na UI; enums alinhados à API
+- [x] A4 Formatação de moeda, datas e percentuais no app (`Formatadores`), com enums alinhados à API
 - [x] A5 Login real: token e usuário persistidos em DataStore, sessão restaurada e validada com `/auth/me` na abertura,
   401 durante o uso derruba a sessão e volta ao login com aviso; SSO e credenciais de teste removidos da tela
 - [x] A6 Estados de UI: carregando, erro com "Tentar de novo" e lista vazia nas telas dos três perfis — pull-to-refresh fica para o A15
-- [ ] **Operador**
+- [x] **Operador**
   - [x] A7 Minhas ideias (só as próprias, vindas da API) + tela de detalhe com status, prioridade e retorno do gestor
   - [x] A8 Formulário único de cadastro e edição com seletor de orientação estratégica; exclusão com confirmação.
     Edição e exclusão só aparecem enquanto a ideia está `ENVIADA`, como a API exige
-- [ ] **Gestor**
+- [x] **Gestor**
   - [x] A9 Painel com KPIs reais vindos de `/api/dashboard/gestor`, com atalhos para a fila e para os projetos
   - [x] A10 Fila com filtros funcionais (etapa, prioridade e área), tela de análise da ideia com priorização,
     avanço de etapa e rejeição exigindo motivo digitado pelo gestor
   - [x] A11 Projetos: lista, cadastro, edição, exclusão com confirmação, atualização de progresso (etapa, %, status,
     observação) e registro de resultados (retorno, custo evitado, produtividade)
-- [ ] **Liderança**
+- [x] **Liderança**
   - [x] A12 Dashboard com KPIs reais + gráficos desenhados em Canvas (sem biblioteca externa): lucro por orientação,
     projetos por situação e ideias por etapa
   - [x] A13 CRUD de orientações pela liderança (criar, editar, excluir com confirmação) + tela de histórico de alterações
@@ -227,7 +229,7 @@ backend/
 - [x] D1 `README.md` raiz: pré-requisitos, passo a passo (Docker + Android Studio), usuários de teste,
   roteiro de avaliação por perfil, diagrama de arquitetura, endpoints, regras de negócio, testes,
   configuração e solução de problemas — validado executando o ambiente do zero
-- [ ] D2 `backend/README.md` com instruções de execução (exigido)
+- [x] D2 `backend/README.md` com execução via Docker, variáveis, usuários de teste e como rodar os testes
 - [x] D3 `docs/ARQUITETURA.md`: diagramas de arquitetura, fluxo de autenticação, domínio e ciclo de vida da ideia,
   além das decisões técnicas e seus porquês
 - [x] D4 `docs/ENDPOINTS.md`: 27 endpoints com método, parâmetros, corpo e respostas, gerado a partir do OpenAPI,
@@ -237,7 +239,8 @@ backend/
 - [ ] D6 Vídeo de demonstração dos 3 perfis (recomendado, a v1 teve)
 - [x] D7 `./empacotar-entrega.sh` gera `entrega/` com backend.zip, app.zip (com o APK dentro e solto) e
   documentacao.zip — testado: nenhum arquivo de build entrou nos pacotes
-- [ ] D8 Checklist final: backend sobe com `docker compose up`, APK instala e loga com os 3 perfis, nenhum mock restante
+- [~] D8 Checklist verificado hoje: compose sobe do zero, APK instala, os 3 perfis logam e nenhum mock restou.
+  **Falta** rodar `./empacotar-entrega.sh` quando a apresentação estiver pronta
 
 ## 10. Cronograma (hoje 14/09 → entrega 21/09)
 
